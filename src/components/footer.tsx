@@ -4,17 +4,20 @@ import Image from "next/image";
 import Link from "next/link";
 import { socialMap } from "@/data/dataElements";
 import { useEffect, useState } from "react";
-import { API_HOST } from "@/config";
 
 const Footer = () => {
   const [subscribing, setSubscribing] = useState(false);
   const [message, setMessage] = useState({ success: false, message: "" });
   const [socialHandles, setSocialHandles] = useState([]);
 
+  let API_HOST = "http://localhost:1337";
+
   useEffect(() => {
     async function getSocialHandles() {
       try {
-        const res = await fetch(`${API_HOST}/api/v1/social-handles`);
+        const res = await fetch(
+          "https://test.brntoken.net/api/v1/social-handles"
+        );
         const repo = await res.json();
         setSocialHandles(repo);
       } catch (e: any) {
@@ -33,33 +36,43 @@ const Footer = () => {
 
     if (emailRegex.test(email)) {
       try {
-        const subscriptionRequest = await fetch(
-          `${API_HOST}/api/v1/subscriptions`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ email }),
+        const subscriptionRequest = await fetch(`${API_HOST}/api/subscribers`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
           },
-        );
+          body: JSON.stringify({
+            data: {
+              email: email,
+            },
+          }),
+        });
         const subscriptionResponse = await subscriptionRequest.json();
-        if (subscriptionResponse?.status == false) {
+
+        // subscriptionResponse.error var mı diye kontrol ediyoruz
+        if (subscriptionResponse?.error?.status === 400) {
           setMessage({
             success: false,
             message: "Your email is already subscribed.",
           });
-        } else {
+        } else if (subscriptionResponse?.data) {
           setMessage({ success: true, message: "Thank you for subscribing." });
+        } else {
+          // Beklenmedik bir yanıt alındığında
+          setMessage({
+            success: false,
+            message: "Unexpected response from server.",
+          });
         }
       } catch (e: any) {
-        setMessage({ success: true, message: e.message });
+        setMessage({ success: false, message: e.message });
       }
     } else {
       setMessage({ success: false, message: "Incorrect email format" });
     }
     setSubscribing(false);
   };
+
   return (
     <footer>
       <div>
@@ -102,7 +115,9 @@ const Footer = () => {
                 </div>
               </form>
               <p
-                className={`${message.success ? "text-accent" : "text-red-500"} mt-3`}
+                className={`${
+                  message.success ? "text-accent" : "text-red-500"
+                } mt-3`}
               >
                 {message.message}
               </p>
@@ -148,12 +163,12 @@ const Footer = () => {
                       social.name == "Discord"
                         ? "https://discord.gg/sS5KJeE8Ps"
                         : social.name == "Instagram"
-                          ? "https://www.instagram.com/brnmetaverse?igsh=MW80aDgzb3p4a3hwMA=="
-                          : social.url
+                        ? "https://www.instagram.com/brnmetaverse?igsh=MW80aDgzb3p4a3hwMA=="
+                        : social.url
                     }
                   >
                     <Image
-                      src={`${API_HOST}${social.icon_path}`}
+                      src={`https://test.brntoken.net/${social.icon_path}`}
                       alt={social.name}
                       height={30}
                       width={30}

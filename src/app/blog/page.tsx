@@ -2,7 +2,6 @@
 import {archivo_black, poppins} from "@/config/fonts";
 import {useEffect, useState} from "react";
 
-import {API_HOST} from "@/config";
 import useConfig from "@/hooks/useConfig";
 import useBlog from "@/hooks/useBlog";
 import Grid from '@mui/material/Unstable_Grid2';
@@ -13,6 +12,9 @@ export default function Blog() {
     const [team, setTeam] = useState([]);
     const [{token: tokenInformation}] = useConfig('token');
     const [posts] = useBlog('filter[published]=1');
+
+    let API_HOST = 'http://localhost:1337';
+
 
     useEffect(()=>{
         async function getTeam(){
@@ -50,12 +52,12 @@ export default function Blog() {
                                           <p className={'text-xl font-bold'}>{post.title}</p>
                                           <div className={'flex items-center text-xs gap-1 text-accent'}>
                                               <span>Posted </span>
-                                              <TimeAgo
+                                              {/*<TimeAgo
                                                   className={'text-xs text-white'}
                                                   datetime={post.created_at}
                                                   locale='us_En'
                                                   live={true}
-                                              />
+                                              /> */}
                                           </div>
 
                                           <p className={'text-sm mt-3'}>{post.body.replace(/<[^>]+>/g, '').slice(0,100)}</p>

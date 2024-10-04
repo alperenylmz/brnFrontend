@@ -1,11 +1,15 @@
-const { i18n } = require('./next-i18next.config')
-
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-    // i18n,
+module.exports = {
+    reactStrictMode: true,
     images: {
-        domains: ["brn-api.test","127.0.0.1","test.brntoken.net","192.168.241.31"],
+      domains: ["brn-api.test","127.0.0.1","test.brntoken.net","192.168.241.31", "http://51.20.121.61:1337/","localhost"],      
+      remotePatterns: [
+        {
+          protocol: 'http',
+          hostname: 'localhost',
+          port: '1337',
+          pathname: '/uploads/**',
+        },
+      ],
     },
-}
-
-module.exports = nextConfig
+  };
+  

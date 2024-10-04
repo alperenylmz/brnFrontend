@@ -1,5 +1,4 @@
 import {useCallback, useEffect, useState} from "react";
-import {API_HOST} from "@/config";
 
 type Screen = {
     width: number,
@@ -11,6 +10,8 @@ export default function useScreenSize() {
     const [hasError, setHasError] = useState<boolean>(false);
     const [isLoading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<any>(null);
+
+    let API_HOST = 'http://localhost:1337';
 
     const getSize = useCallback(() => {
         return {width: window.screen.width, height: window.screen.height};

@@ -2,7 +2,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 
 import Head from 'next/head';
-import {API_HOST} from "@/config";
 import parse from 'html-react-parser'
 
 
@@ -16,6 +15,8 @@ type Blog = {
 
 const Page = (props: any)=> {
     const [blog, setBlog] = useState<Blog>();
+    let API_HOST = 'http://localhost:1337';
+
 
     useEffect(()=>{
         if(props.params.slug){

@@ -1,5 +1,4 @@
 import {useEffect, useState} from "react";
-import {API_HOST} from "@/config";
 import RoadmapCard, {Roadmap} from "@/components/roadmap-card";
 
 export default function useRoadmap(): [Array<{ [p: string]: { quarters: Roadmap[] } }>, boolean, boolean, any] {
@@ -9,6 +8,9 @@ export default function useRoadmap(): [Array<{ [p: string]: { quarters: Roadmap[
     const [hasError, setHasError] = useState<boolean>(false);
     const [isLoading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<any>(null);
+
+    let API_HOST = 'http://localhost:1337';
+
 
 
     useEffect(()=>{

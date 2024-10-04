@@ -1,6 +1,5 @@
 import {useEffect, useState} from "react";
 import { spatie } from '@limitless.claver/laravel-query-builder';
-import {API_HOST} from "@/config";
 
 export default function useMarkets() : [any[], boolean, boolean, any, ((value: (((prevState: undefined) => undefined) | undefined)) => void)] {
     const [markets, setMarkets] = useState([]);
@@ -8,6 +7,9 @@ export default function useMarkets() : [any[], boolean, boolean, any, ((value: (
     const [isLoading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [reload, setReload] = useState();
+
+    let API_HOST = 'http://localhost:1337';
+
 
 
     useEffect(()=>{

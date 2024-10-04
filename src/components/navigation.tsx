@@ -4,8 +4,7 @@ import Link from "next/link";
 import {poppins} from "@/config/fonts";
 import {FiMenu, FiX} from "react-icons/fi";
 import {useEffect, useRef, useState} from "react";
-import useMarkets from "@/hooks/useMarkets";
-import {API_HOST} from "@/config";
+//import useMarkets from "@/hooks/useMarkets";
 import {BiMapPin} from "react-icons/bi";
 import {GiNinjaHeroicStance} from "react-icons/gi";
 
@@ -19,7 +18,10 @@ const Navigation = ()=> {
     const [showGameDropdown, setShowGameShowDropdown] = useState(0);
     const showDropdownRef = useRef(showDropdown);
     const showGameDropdownRef = useRef(showGameDropdown);
-    const [markets] = useMarkets();
+    //const [markets] = useMarkets();
+
+    let API_HOST = 'http://localhost:1337';
+
 
     useEffect(() => {
         showDropdownRef.current = showDropdown;
@@ -144,22 +146,22 @@ const Navigation = ()=> {
                                         onMouseLeave={()=> setShowDropdown(0)}
                                         onMouseEnter={()=> setShowDropdown(2)} id={'dropdown'}
                                         className={`transition-all absolute  overflow-clip ${showDropdown > 0 ? 'flex opacity-100 visible top-12':'opacity-0 invisible top-32'} flex-col z-40 w-[250px] h-auto bg-primary rounded-xl`}>
-                                        {markets.map((listing, index) => (
+                                        {/*markets.map((listing, index) => (
                                             <a href={listing.token_url} target={'_blank'} key={index} className={'hover:bg-cDark'}>
                                                 <div className={`flex gap-3 items-center p-3 text-sm ${poppins.bold.className} border-b border-primary-light hover:bg-primary-dark`}>
                                                     <Image src={`${API_HOST}${listing.image_path}`} height={30} width={30} className={'rounded-full'} alt={listing.label}/>
                                                     {listing.name}
                                                 </div>
                                             </a>
-                                        ))}
+                                        ))*/}
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> 
                     </div>
                 </div>
 
-                {/*  BOTTOM MODAL PANEL  */}
+                {/*  BOTTOM MODAL PANEL
                 <div className={`lg:hidden fixed left-0 px-8 py-5 transition-all ${modalIslOpen ? 'bottom-0 opacity-100 visible' : 'bottom-[-100vh] invisible opacity-0'} items-center justify-center w-[100vw] bg-primary z-10`}>
                     {markets?.map((listing: any, index: number) => (
                         <a href={listing.token_url} target={'_blank'} key={index} className={'hover:bg-cDark'}>
@@ -173,7 +175,7 @@ const Navigation = ()=> {
                         Close
                     </button>
                 </div>
-                {/*   BOTTOM MODAL PANEL  */}
+                 BOTTOM MODAL PANEL  */}
 
                 {/*  BOTTOM GAME MODAL PANEL  */}
                 <div style={{position:'fixed'}} className={`lg:hidden fixed left-0 px-8 py-5 transition-all ${gameModalIslOpen ? 'bottom-0 opacity-100 visible' : 'bottom-[-100vh] invisible opacity-0'} items-center justify-center w-[100vw] bg-primary z-10`}>

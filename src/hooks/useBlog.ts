@@ -1,6 +1,4 @@
 import {useEffect, useState} from "react";
-import {API_HOST} from "@/config";
-
 
 
 export default function useBlog(filter: string): [[], boolean, boolean, any, ((value: (((prevState: undefined) => undefined) | undefined)) => void)] {
@@ -9,6 +7,9 @@ export default function useBlog(filter: string): [[], boolean, boolean, any, ((v
     const [isLoading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [reload, setReload] = useState();
+
+    let API_HOST = 'http://localhost:1337';
+
 
 
     useEffect(()=>{
