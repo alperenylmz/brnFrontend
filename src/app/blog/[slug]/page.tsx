@@ -15,7 +15,7 @@ type Blog = {
 
 const Page = (props: any)=> {
     const [blog, setBlog] = useState<Blog>();
-    let API_HOST = 'http://localhost:1337';
+    let API_HOST = 'http://51.20.121.61:1337/';
 
 
     useEffect(()=>{

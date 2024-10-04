@@ -113,7 +113,7 @@ export default function Team() {
   const [{ token: tokenInformation }] = useConfig("token");
   const [data, setData] = useState<TeamPageData>();
 
-  let API_HOST = "http://localhost:1337";
+  let API_HOST = "http://51.20.121.61:1337/";
 
   useEffect(() => {
     const fetchHomeData = async () => {

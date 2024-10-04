@@ -7,7 +7,7 @@ export default function useTokenPrice() : (any[] | boolean | any | ((value: (((p
   const [error, setError] = useState(null);
   const [reload, setReload] = useState();
 
-  let API_HOST = 'http://localhost:1337';
+  let API_HOST = 'http://51.20.121.61:1337/';
 
 
 

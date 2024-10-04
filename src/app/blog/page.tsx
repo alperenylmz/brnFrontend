@@ -2,33 +2,15 @@
 import {archivo_black, poppins} from "@/config/fonts";
 import {useEffect, useState} from "react";
 
+import {API_HOST} from "@/config";
 import useConfig from "@/hooks/useConfig";
 import useBlog from "@/hooks/useBlog";
 import Grid from '@mui/material/Unstable_Grid2';
 import TimeAgo from 'timeago-react';
 import Link from "next/link";
 
-export default function Blog() {
-    const [team, setTeam] = useState([]);
-    const [{token: tokenInformation}] = useConfig('token');
-    const [posts] = useBlog('filter[published]=1');
-
-    let API_HOST = 'http://localhost:1337';
-
-
-    useEffect(()=>{
-        async function getTeam(){
-            try{
-                const res = await fetch(`${API_HOST}/api/v1/staff`);
-                const repo = await res.json();
-                setTeam(repo);
-            } catch (e: any) {
-                console.log(e.message)
-            }
-        }
-        getTeam();
-    },[])
-
+export default function Blog() {  
+    const [posts] = useBlog('filter[published]=1'); 
   return (
     <main className="flex flex-col items-center justify-center">
       <div className={'flex items-center justify-center min-h-[50vh] bg-gradient-token py-16 w-full'}>
@@ -45,22 +27,22 @@ export default function Blog() {
                           <Grid xs={12} lg={4}>
                               <div className={'p-2 bg-primary-dark text-white rounded-xl'}>
                                   <div className={'relative h-[200px] w-full overflow-clip rounded-xl'}>
-                                      <img src={`${API_HOST}${post.banner}`} alt={''} />
+                                      <img src={`${post.imageUrl}`} alt={''} />
                                   </div>
                                   <div className={'flex justify-between mt-5 mb-3 px-5'}>
                                       <div className={'flex flex-col gap-2'}>
                                           <p className={'text-xl font-bold'}>{post.title}</p>
                                           <div className={'flex items-center text-xs gap-1 text-accent'}>
                                               <span>Posted </span>
-                                              {/*<TimeAgo
+                                              <TimeAgo
                                                   className={'text-xs text-white'}
                                                   datetime={post.created_at}
                                                   locale='us_En'
                                                   live={true}
-                                              /> */}
+                                              />
                                           </div>
 
-                                          <p className={'text-sm mt-3'}>{post.body.replace(/<[^>]+>/g, '').slice(0,100)}</p>
+                                          <p className={'text-sm mt-3'}>{post.body}</p>
                                       </div>
                                   </div>
                               </div>

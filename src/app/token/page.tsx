@@ -13,6 +13,7 @@ import { fetchAPI } from "@/lib/api";
 import { getStrapiMedia } from "@/lib/media";
 import { ellipses } from "@/helpers/strings";
 import { FiCheck, FiCopy } from "react-icons/fi";
+import React from "react";
 
 interface TokenPageData {
   data: {
@@ -147,7 +148,7 @@ export default function Token() {
   const [textCopied, setTextCopied] = useState(false);
 
 
-  let API_HOST = "http://localhost:1337";
+  let API_HOST = "http://51.20.121.61:1337/";
 
   useEffect(() => {
     const fetchHomeData = async () => {
