@@ -8,7 +8,7 @@ export default function useMarkets() : [any[], boolean, boolean, any, ((value: (
     const [error, setError] = useState(null);
     const [reload, setReload] = useState();
 
-    let API_HOST = 'http://51.20.121.61:1337/';
+    let API_HOST = 'https://test.brntoken.net';
 
 
 

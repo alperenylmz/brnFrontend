@@ -2,7 +2,6 @@
 import {archivo_black, poppins} from "@/config/fonts";
 import {useEffect, useState} from "react";
 
-import {API_HOST} from "@/config";
 import useConfig from "@/hooks/useConfig";
 import useBlog from "@/hooks/useBlog";
 import Grid from '@mui/material/Unstable_Grid2';
@@ -36,13 +35,13 @@ export default function Blog() {
                                               <span>Posted </span>
                                               <TimeAgo
                                                   className={'text-xs text-white'}
-                                                  datetime={post.created_at}
+                                                  datetime={post.createdAt}
                                                   locale='us_En'
                                                   live={true}
                                               />
                                           </div>
 
-                                          <p className={'text-sm mt-3'}>{post.body}</p>
+                                          <p className={'text-sm mt-3'}>{post.description}</p>
                                       </div>
                                   </div>
                               </div>

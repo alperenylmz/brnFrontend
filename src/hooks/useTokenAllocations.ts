@@ -6,7 +6,7 @@ export default function useTokenAllocations() {
     const [isLoading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<any>(null);
 
-    let API_HOST = 'http://51.20.121.61:1337/';
+    let API_HOST = 'https://test.brntoken.net';
 
 
 
@@ -15,6 +15,8 @@ export default function useTokenAllocations() {
             try{
                 const request = await fetch(`${API_HOST}/api/v1/token-allocations`);
                 const response = await request.json();
+                console.log("TOKEN ALLOCATIONS RESPONSE: ", response);
+                
                 setTokenAllocations(response);
             } catch (e: any) {
                 console.log(e.message);

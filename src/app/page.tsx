@@ -8,7 +8,6 @@ import { useEffect, useRef, useState } from "react";
 import useTokenAllocations from "@/hooks/useTokenAllocations";
 import useConfig from "@/hooks/useConfig";
 import formatNumber, { isiOS } from "@/helpers";
-import usePartners from "@/hooks/usePartners";
 //import useMarkets from "@/hooks/useMarkets";import {FiPlay} from "react-icons/fi";
 import TokenInfoSlide from "@/components/tokenInfoSlide";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -18,6 +17,7 @@ import "swiper/css/pagination";
 import { fetchAPI } from "@/lib/api";
 import { getStrapiMedia } from "@/lib/media";
 import { FiPlay } from "react-icons/fi";
+import useMarkets from "@/hooks/useMarkets";
 
 interface HomePageData {
   data: {
@@ -114,17 +114,17 @@ interface HomePageData {
 export default function Home() {
   const [showTokenInfo, setShowTokenInfo] = useState(false);
   const [showSocialInfo, setShowSocialInfo] = useState(false);
-  //const [tokenAllocations] = useTokenAllocations();
+  const [tokenAllocations] = useTokenAllocations();
   const [{ token: tokenInformation }] = useConfig("token");
   const [{ documents }] = useConfig("documents");
-  const [partners] = usePartners();
-  //const [markets] = useMarkets();
+  const [markets] = useMarkets();
   const [modalIslOpen, setModalIsOpen] = useState(false);
   const [videoIsPlaying, setVideoIsPlaying] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [data, setData] = useState<HomePageData>();
+  const [socialHandles, setSocialHandles] = useState([]);
 
-  let API_HOST = "http://51.20.121.61:1337/";
+  let API_HOST = "https://test.brntoken.net";
 
   useEffect(() => {
     const fetchHomeData = async () => {
@@ -140,6 +140,19 @@ export default function Home() {
     };
     fetchHomeData();
   }, []);
+
+  useEffect(()=>{
+    async function getSocialHandles(){
+        try{
+            const res = await fetch(`${API_HOST}/api/v1/social-handles`);
+            const repo = await res.json();
+            setSocialHandles(repo);
+        } catch (e: any) {
+            console.log(e.message)
+        }
+    }
+    getSocialHandles();
+},[])
 
   useEffect(() => {
     if (videoRef.current && videoRef.current.currentTime > 0) {
@@ -177,28 +190,42 @@ export default function Home() {
       </div>
 
       {/*SOCIAL SLIDE*/}
-      {/*
-            socialHandles.length > 0 &&
-            (
-                <div className={`flex flex-col gap-3 md:gap-5 items-center p-2 md:p-3 fixed ${showSocialInfo ? 'left-0' : 'md:left-[-75px] left-[-65px]'} transition-all bg-primary-dark rounded-r-2xl top-[30%] translate-[-50%,-50%] z-[999]`}>
-                    {
-                        socialHandles.map((social: any, index)=>(
-                            <Link key={index} href={social.url}>
-                                <div className={'bg-primary-light p-3 rounded-lg'}>
-                                    <Image className={'hidden md:block'} src={`${API_HOST}${social.icon_path}`} alt={social.name} height={25} width={25} />
-                                    <Image className={'md:hidden'} src={`${API_HOST}${social.icon_path}`} alt={social.name} height={20} width={20} />
-                                </div>
-                            </Link>
-                        ))
-                    }
-                    <button onClick={()=> setShowSocialInfo(!showSocialInfo)} className={'absolute top-[40%] transform-y-[-50%] right-[-45px] md:right-[-45px] rotate-[90deg] flex items-center gap-2 bg-primary-dark p-5 py-3 rounded-t-2xl '}>
-                        {
-                            showSocialInfo ?  <FaChevronDown /> : <FaChevronUp />
-                        }
-                    </button>
-                </div>
-            )
-        */}
+      {socialHandles.length > 0 && (
+        <div
+          className={`flex flex-col gap-3 md:gap-5 items-center p-2 md:p-3 fixed ${
+            showSocialInfo ? "left-0" : "md:left-[-75px] left-[-65px]"
+          } transition-all bg-primary-dark rounded-r-2xl top-[30%] translate-[-50%,-50%] z-[999]`}
+        >
+          {socialHandles.map((social: any, index) => (
+            <Link key={index} href={social.url}>
+              <div className={"bg-primary-light p-3 rounded-lg"}>
+                <Image
+                  className={"hidden md:block"}
+                  src={`${API_HOST}${social.icon_path}`}
+                  alt={social.name}
+                  height={25}
+                  width={25}
+                />
+                <Image
+                  className={"md:hidden"}
+                  src={`${API_HOST}${social.icon_path}`}
+                  alt={social.name}
+                  height={20}
+                  width={20}
+                />
+              </div>
+            </Link>
+          ))}
+          <button
+            onClick={() => setShowSocialInfo(!showSocialInfo)}
+            className={
+              "absolute top-[40%] transform-y-[-50%] right-[-45px] md:right-[-45px] rotate-[90deg] flex items-center gap-2 bg-primary-dark p-5 py-3 rounded-t-2xl "
+            }
+          >
+            {showSocialInfo ? <FaChevronDown /> : <FaChevronUp />}
+          </button>
+        </div>
+      )}
 
       <div>
         <div className="flex flex-col items-center justify-center min-h-screen bg-cover bg-center">
@@ -306,7 +333,7 @@ export default function Home() {
                           )
                         : "/default/path/to/coinsites.webp"
                     }
-                    className={"object-contain"}
+                    className={"absolute inset-0 w-full h-full object-contain"}
                     alt={""}
                   />
                 </div>
@@ -361,11 +388,13 @@ export default function Home() {
               </div>
             </div>
             <div className={"flex items-center gap-4 mt-16"}>
-              {/*
-                            tokenAllocations.map((token: any, index: number) =>(
-                                <div style={{backgroundColor: token.color}} key={index} className={`bg-[${token.color}] p-2 rounded-full`}></div>
-                            ))
-                        */}
+              {tokenAllocations.map((token: any, index: number) => (
+                <div
+                  style={{ backgroundColor: token.color }}
+                  key={index}
+                  className={`bg-[${token.color}] p-2 rounded-full`}
+                ></div>
+              ))}
             </div>
             <div className={"my-24"}>
               <Link href={"token"}>
@@ -390,6 +419,7 @@ export default function Home() {
                   : "/default/path/to/coinsites.webp"
               }
               alt={""}
+              className="absolute inset-0 w-full h-full object-contain"
             />
           </div>
         </div>
@@ -508,7 +538,6 @@ export default function Home() {
                       {block.PartnerDescription[0]?.children[0]?.text ||
                         "No description available"}
                     </p>{" "}
-                    // Açıklama
                   </div>
                 </Link>
               ))
@@ -518,8 +547,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/*  BOTTOM MODAL PANEL 
-        <div className={`lg:hidden fixed left-0 px-8 py-5 transition-all ${modalIslOpen ? 'bottom-0 opacity-100 visible' : 'bottom-[-100vh] invisible opacity-0'} items-center justify-center w-[100vw] bg-primary z-10`}>
+        {/* <div className={`lg:hidden fixed left-0 px-8 py-5 transition-all ${modalIslOpen ? 'bottom-0 opacity-100 visible' : 'bottom-[-100vh] invisible opacity-0'} items-center justify-center w-[100vw] bg-primary z-10`}>
             {markets.sort((a, b) => a.order_index - b.order_index)?.map((listing: any, index: number) => (
                 <a href={listing.token_url} target={'_blank'} key={index} className={'hover:bg-cDark'}>
                     <div className={'flex gap-3 items-center p-3 text-sm'}>
@@ -531,8 +559,7 @@ export default function Home() {
             <button onClick={()=> setModalIsOpen(false)} className={'bg-primary-light p-5 w-full rounded-full mt-5'}>
                 Close
             </button>
-        </div>
-          BOTTOM MODAL PANEL  */}
+        </div> */}
     </main>
   );
 }

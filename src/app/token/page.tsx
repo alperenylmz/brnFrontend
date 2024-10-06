@@ -148,7 +148,7 @@ export default function Token() {
   const [textCopied, setTextCopied] = useState(false);
 
 
-  let API_HOST = "http://51.20.121.61:1337/";
+  let API_HOST = "http://localhost:1337/";
 
   useEffect(() => {
     const fetchHomeData = async () => {
@@ -287,6 +287,7 @@ export default function Token() {
                   : "/default/path/to/coinsites.webp"
               }
               alt={""}
+              className="absolute inset-0 w-full h-full object-contain"
             />
           </div>
         </div>

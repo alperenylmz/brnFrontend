@@ -10,7 +10,7 @@ const Footer = () => {
   const [message, setMessage] = useState({ success: false, message: "" });
   const [socialHandles, setSocialHandles] = useState([]);
 
-  let API_HOST = "http://51.20.121.61:1337/";
+  let API_HOST = "http://localhost:1337/";
 
   useEffect(() => {
     async function getSocialHandles() {

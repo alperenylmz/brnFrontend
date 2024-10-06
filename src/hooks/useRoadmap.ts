@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { API_HOST } from "@/config";
 
 type RoadMapItem = {
   title: string;
@@ -28,7 +27,7 @@ export default function useRoadmap(): [
     async function getRoadmap() {
       setLoading(true);
       try {
-        const request = await fetch(`http://51.20.121.61:1337/api/roadmap?populate[OverTheYears][populate][List][populate]=*`);
+        const request = await fetch(`http://localhost:1337/api/roadmap?populate[OverTheYears][populate][List][populate]=*`);
         const responseJson = await request.json();
         const response = responseJson;
 

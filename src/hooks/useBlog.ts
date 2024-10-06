@@ -1,16 +1,64 @@
 import { useEffect, useState } from "react";
-import { API_HOST } from "@/config";
 
-interface RichTextChild {
-  type: string;
-  text: string;
+// Interface for the image formats
+interface ImageFormat {
+  name: string;
+  hash: string;
+  ext: string;
+  mime: string;
+  path: string | null;
+  width: number;
+  height: number;
+  size: number;
+  sizeInBytes: number;
+  url: string;
 }
 
-interface RichTextBlock {
-  type: string;
-  children: RichTextChild[];
+// Interface for the cover image attributes
+interface CoverImageAttributes {
+  url: string;
+  formats: {
+    thumbnail: ImageFormat;
+    large: ImageFormat;
+    medium: ImageFormat;
+    small: ImageFormat;
+  };
 }
 
+// Interface for the cover image data
+interface CoverImageData {
+  id: number;
+  attributes: CoverImageAttributes;
+}
+
+// Interface for the cover image
+interface CoverImage {
+  data: CoverImageData | null;
+}
+
+// Interface for the attributes of each blog post
+interface BlogPostAttributes {
+  Title: string;
+  slug: string;
+  createdAt: string;
+  updatedAt: string;
+  miniDescription: string;
+  coverImage: CoverImage;
+}
+
+// Interface for each item in the data array
+interface BlogPostDataItem {
+  id: number;
+  attributes: BlogPostAttributes;
+}
+
+// Interface for the API response
+interface ApiResponse {
+  data: BlogPostDataItem[];
+  meta: any;
+}
+
+// Interface for your blog post after transformation
 interface BlogPost {
   id: number;
   title: string;
@@ -18,44 +66,7 @@ interface BlogPost {
   imageUrl: string | null;
   createdAt: string;
   updatedAt: string;
-}
-
-interface BlogPostData {
-  id: number;
-  PostTitle: string;
-  PostDescription: RichTextBlock[];
-  url: string | null;
-  Image: {
-    data: {
-      id: number;
-      attributes: {
-        name: string;
-        url: string;
-        formats: {
-          thumbnail: {
-            url: string;
-          };
-        };
-        // Diğer alanlar
-      };
-    };
-  } | null;
-}
-
-interface ApiResponse {
-  data: {
-    id: number;
-    attributes: {
-      Title: string;
-      Description: string;
-      createdAt: string;
-      updatedAt: string;
-      publishedAt: string;
-      slug: string;
-      BlogPosts: BlogPostData[];
-    };
-  };
-  meta: any;
+  slug: string;
 }
 
 export default function useBlog(
@@ -77,32 +88,34 @@ export default function useBlog(
     async function getBlogPosts() {
       setLoading(true);
       try {
-        const request = await fetch(`http://51.20.121.61:1337/api/blog?populate[BlogPosts][populate][Image]=*`);
+        const request = await fetch(
+          `http://localhost:1337/api/blog-posts?fields[0]=Title&fields[1]=slug&fields[2]=createdAt&fields[3]=miniDescription&populate[coverImage][fields][0]=url&populate[coverImage][fields][1]=formats`
+        );
         const responseJson = await request.json();
+        console.log(responseJson);
+
         const response: ApiResponse = responseJson;
 
-        const blogPostsData = response.data.attributes.BlogPosts;
+        // Map over the array of blog posts
+        const blogPosts: BlogPost[] = response.data.map(
+          (item: BlogPostDataItem) => {
+            const attributes = item.attributes;
 
-        const blogPosts: BlogPost[] = blogPostsData.map(
-          (postData: BlogPostData) => { 
-            // PostDescription alanını düz metne dönüştürmek için yardımcı bir fonksiyon kullanıyoruz
-            const description = convertRichTextToPlainText(
-              postData.PostDescription
-            );
-
-            // Görsel URL'sini alıyoruz
+            // Extract image URL
+            const imageData = attributes.coverImage?.data;
             const imageUrl =
-              postData.Image?.data?.attributes?.url ||
-              postData.Image?.data?.attributes?.formats?.thumbnail?.url ||
+              imageData?.attributes?.url ||
+              imageData?.attributes?.formats?.thumbnail?.url ||
               null;
 
             return {
-              id: postData.id,
-              title: postData.PostTitle,
-              description: description,
-              imageUrl:`http://51.20.121.61:1337${imageUrl}`,
-              createdAt: response.data.attributes.createdAt,
-              updatedAt: response.data.attributes.updatedAt,
+              id: item.id,
+              title: attributes.Title,
+              description: attributes.miniDescription,
+              imageUrl: imageUrl ? `http://localhost:1337${imageUrl}` : null,
+              createdAt: attributes.createdAt,
+              updatedAt: attributes.updatedAt,
+              slug: attributes.slug,
             };
           }
         );
@@ -122,20 +135,21 @@ export default function useBlog(
   return [data, isLoading, hasError, error, setReload];
 }
 
-// Rich Text içeriğini düz metne dönüştüren yardımcı fonksiyon
-function convertRichTextToPlainText(
-  richTextContent: RichTextBlock[]
-): string {
-  if (!Array.isArray(richTextContent)) return "";
-  return richTextContent
-    .map((block: RichTextBlock) => {
-      if (block.type === "paragraph") {
-        return block.children
-          .map((child: RichTextChild) => child.text)
-          .join("");
-      }
-      // Diğer blok tipleri için ek işlemler yapabilirsiniz
-      return "";
-    })
-    .join("\n\n");
-}
+
+// // Rich Text içeriğini düz metne dönüştüren yardımcı fonksiyon
+// function convertRichTextToPlainText(
+//   richTextContent: RichTextBlock[]
+// ): string {
+//   if (!Array.isArray(richTextContent)) return "";
+//   return richTextContent
+//     .map((block: RichTextBlock) => {
+//       if (block.type === "paragraph") {
+//         return block.children
+//           .map((child: RichTextChild) => child.text)
+//           .join("");
+//       }
+//       // Diğer blok tipleri için ek işlemler yapabilirsiniz
+//       return "";
+//     })
+//     .join("\n\n");
+// }
