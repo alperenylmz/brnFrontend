@@ -27,14 +27,14 @@ export default function useRoadmap(): [
     async function getRoadmap() {
       setLoading(true);
       try {
-        const request = await fetch(`http://localhost:1337/api/roadmap?populate[OverTheYears][populate][List][populate]=*`);
+        const request = await fetch(`http://localhost:1337/api/home?populate[Roadmap][populate][List][populate]=*`);
         const responseJson = await request.json();
         const response = responseJson;
 
         const roadmapData: Array<{ [year: string]: { quarters: Roadmap[] } }> =
           [];
 
-        const years = response?.data?.attributes?.OverTheYears;
+        const years = response?.data?.attributes?.Roadmap;
         if (Array.isArray(years)) {
           years.forEach((year: any) => {
             const yearName = year.Year || "Unknown Year";

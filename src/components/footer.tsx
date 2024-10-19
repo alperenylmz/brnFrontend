@@ -4,27 +4,240 @@ import Image from "next/image";
 import Link from "next/link";
 import { socialMap } from "@/data/dataElements";
 import { useEffect, useState } from "react";
+import ParticleBackground from "./particle-background";
+import { fetchAPI } from "@/lib/api";
+import { getStrapiMedia } from "@/lib/media";
+import { archivo_black } from "@/config/fonts";
+import BRNLogo from "../../public/favicon-16x16.png";
+
+// Image Formats Interface
+interface ApiResponse {
+  data: {
+    id: number;
+    attributes: {
+      createdAt: string;
+      updatedAt: string;
+      publishedAt: string;
+      Social: {
+        id: number;
+        name: string;
+        url: string;
+        Followers: string;
+        Icon: {
+          data: {
+            id: number;
+            attributes: {
+              name: string;
+              alternativeText: string | null;
+              caption: string | null;
+              width: number;
+              height: number;
+              formats: null; // Formatlar burada null, isteğe göre nullable yapılabilir
+              hash: string;
+              ext: string;
+              mime: string;
+              size: number;
+              url: string;
+              previewUrl: string | null;
+              provider: string;
+              provider_metadata: any | null;
+              createdAt: string;
+              updatedAt: string;
+            };
+          };
+        };
+      }[];
+      Footer: {
+        id: number;
+        AvailableOn: {
+          id: number;
+          url: string;
+          name: string;
+          PlaceImage: {
+            data: {
+              id: number;
+              attributes: {
+                name: string;
+                alternativeText: string | null;
+                caption: string | null;
+                width: number;
+                height: number;
+                formats: {
+                  thumbnail: {
+                    name: string;
+                    hash: string;
+                    ext: string;
+                    mime: string;
+                    path: string | null;
+                    width: number;
+                    height: number;
+                    size: number;
+                    sizeInBytes: number;
+                    url: string;
+                  };
+                  small?: {
+                    name: string;
+                    hash: string;
+                    ext: string;
+                    mime: string;
+                    path: string | null;
+                    width: number;
+                    height: number;
+                    size: number;
+                    sizeInBytes: number;
+                    url: string;
+                  };
+                  medium?: {
+                    name: string;
+                    hash: string;
+                    ext: string;
+                    mime: string;
+                    path: string | null;
+                    width: number;
+                    height: number;
+                    size: number;
+                    sizeInBytes: number;
+                    url: string;
+                  };
+                  large?: {
+                    name: string;
+                    hash: string;
+                    ext: string;
+                    mime: string;
+                    path: string | null;
+                    width: number;
+                    height: number;
+                    size: number;
+                    sizeInBytes: number;
+                    url: string;
+                  };
+                };
+                hash: string;
+                ext: string;
+                mime: string;
+                size: number;
+                url: string;
+                previewUrl: string | null;
+                provider: string;
+                provider_metadata: any | null;
+                createdAt: string;
+                updatedAt: string;
+              };
+            };
+          };
+        }[];
+      };
+    };
+  };
+  meta: object;
+}
+
+interface CoinResponse {
+  status: {
+    timestamp: string;
+    error_code: number;
+    error_message: string | null;
+    elapsed: number;
+    credit_count: number;
+    notice: string | null;
+  };
+  data: {
+    BRN: {
+      id: number;
+      name: string;
+      symbol: string;
+      slug: string;
+      num_market_pairs: number | null;
+      date_added: string;
+      tags: {
+        slug: string;
+        name: string;
+        category: string;
+      }[];
+      max_supply: number | null;
+      circulating_supply: number | null;
+      total_supply: number | null;
+      platform: {
+        id: number;
+        name: string;
+        symbol: string;
+        slug: string;
+        token_address: string;
+      } | null;
+      is_active: number;
+      infinite_supply: boolean;
+      cmc_rank: number | null;
+      is_fiat: number;
+      self_reported_circulating_supply: number | null;
+      self_reported_market_cap: number | null;
+      tvl_ratio: number | null;
+      last_updated: string;
+      quote: {
+        USD: {
+          price: number | null;
+          volume_24h: number | null;
+          volume_change_24h: number | null;
+          percent_change_1h: number | null;
+          percent_change_24h: number | null;
+          percent_change_7d: number | null;
+          percent_change_30d: number | null;
+          percent_change_60d: number | null;
+          percent_change_90d: number | null;
+          market_cap: number | null;
+          market_cap_dominance: number | null;
+          fully_diluted_market_cap: number | null;
+          tvl: number | null;
+          last_updated: string;
+        };
+      };
+    }[];
+  };
+}
 
 const Footer = () => {
   const [subscribing, setSubscribing] = useState(false);
   const [message, setMessage] = useState({ success: false, message: "" });
   const [socialHandles, setSocialHandles] = useState([]);
+  const [data, setData] = useState<ApiResponse>();
 
-  let API_HOST = "http://localhost:1337/";
+  const [coinData, setCoinData] = useState<CoinResponse>();
+  const [error, setError] = useState("");
+
+  let API_HOST = "http://51.20.121.61:1337/";
 
   useEffect(() => {
-    async function getSocialHandles() {
+    const fetchFooterData = async () => {
       try {
-        const res = await fetch(
-          "https://test.brntoken.net/api/v1/social-handles"
+        const response = await fetchAPI<ApiResponse>(
+          "/api/home?populate[Social][populate][Icon]=*&populate[Footer][populate][AvailableOn][populate][PlaceImage]=*"
         );
-        const repo = await res.json();
-        setSocialHandles(repo);
-      } catch (e: any) {
-        console.log(e.message);
+        setData(response);
+        console.log("FOOTER DATA: ", response);
+      } catch (error) {
+        console.log(error);
       }
-    }
-    getSocialHandles();
+    };
+    fetchFooterData();
+  }, []);
+
+  useEffect(() => {
+    const fetchCoinData = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:1337/api/coin/brn-price",
+          {
+            method: "GET",
+          }
+        );
+        const result = await response.json();
+        setCoinData(result);
+      } catch (err) {
+        setError("Veri alınırken bir hata oluştu.");
+        console.error(err);
+      }
+    };
+
+    fetchCoinData();
   }, []);
 
   const subscribe = async (evt: any) => {
@@ -74,11 +287,16 @@ const Footer = () => {
   };
 
   return (
-    <footer>
-      <div>
+    <footer className="relative">
+      {/* Particle Background */}
+      <div className="absolute min-h-full inset-0 z-0">
+        <ParticleBackground />
+      </div>
+
+      <div className="relative z-10">
         <div
           className={
-            "grid grid-cols-1 md:grid-cols-2 justify-between items-center w-[90vw] lg:w-[70vw] m-auto min-h-[40vh] gap-5 !mt-16"
+            "grid grid-cols-1 md:grid-cols-2 justify-between items-center w-[90vw] lg:w-[70vw] m-auto min-h-[40vh] pt-8 gap-16 bg-transparent"
           }
         >
           <div className={"md:order-none order-2"}>
@@ -90,26 +308,26 @@ const Footer = () => {
               <form onSubmit={subscribe}>
                 <div
                   className={
-                    "flex gap-2 justify-between items-center border border-gray-600 rounded-lg p-2"
+                    "flex gap-2 justify-between items-center border border-white rounded-lg p-2"
                   }
                 >
                   <input
                     name={"email"}
                     type={"text"}
                     className={
-                      "text-sm w-full bg-transparent outline-0 p-3 rounded-lg"
+                      "text-sm w-full border-white bg-transparent outline-0 p-3 rounded-lg"
                     }
                     placeholder={"SUBSCRIBE TO OUR NEWSLETTER"}
                   />
                   <button
                     type={"submit"}
                     disabled={subscribing}
-                    className={"bg-accent p-3 rounded-lg"}
+                    className={" p-3 rounded-lg"}
                   >
                     {subscribing ? (
                       <FiLoader size={22} className="animate-spin" />
                     ) : (
-                      <FiArrowRight />
+                      <FiArrowRight size={32} />
                     )}
                   </button>
                 </div>
@@ -129,53 +347,176 @@ const Footer = () => {
             }
           >
             <Image
-              src={"/assets/images/googlemail.png"}
+              src={"/assets/images/official-gmail-icon-2020-.svg"} // src={"/assets/images/googlemail.png"}
               width={300}
               height={270}
               alt={""}
             />
           </div>
         </div>
-        <div
-          className={
-            "flex items-center justify-center bg-primary-dark min-h-[200px] py-8 mt-12"
-          }
-        >
-          <div
-            className={
-              "flex flex-col md:flex-row items-center justify-between w-[90vw] lg:w-[80vw]"
-            }
-          >
-            <Image
-              src={"/assets/images/logo.png"}
-              alt={""}
-              height={90}
-              width={250}
-            />
-            <div className={"flex gap-5 items-center text-white mt-8 lg:mt-0"}>
-              {socialHandles.map((social: any, index) => {
-                // This is because we didn't build a way to change the social media urls from the Admin. Baran requested for that to be suspended
-                return (
-                  <Link
-                    key={index}
+
+        <div className="relative flex items-center justify-center min-h-[320px] mt-12">
+          {/* İçerik */}
+          <div className="relative z-10 flex flex-col md:flex-row items-center justify-between w-[90vw] lg:w-[80vw]">
+            <div className="flex flex-row gap-8 items-start mt-8">
+              {/* Sol Kolon - Linkler */}
+              <div className="flex flex-col space-y-4 text-white">
+                <a
+                  href="https://www.brnmetaverse.net/token"
+                  className="hover:text-gray-400"
+                >
+                  $BRN
+                </a>
+                <a
+                  href="https://stake.brntoken.net/"
+                  className="hover:text-gray-400"
+                >
+                  Stake
+                </a>
+                <a
+                  href="https://whitepaper.brnmetaverse.net/"
+                  className="hover:text-gray-400"
+                >
+                  Whitepaper
+                </a>
+                <a
+                  href="https://github.com/interfinetwork/smart-contract-audits/blob/audit-updates/BRNMetaverse_0x926ecC7687fCFB296E97a2b4501F41A6f5F8C214.pdf"
+                  className="hover:text-gray-400"
+                >
+                  Audit
+                </a>
+                <a
+                  href="https://www.brnmetaverse.net/assets/docs/legal-opinion.pdf"
+                  className="hover:text-gray-400"
+                >
+                  Legal Opinion
+                </a>
+                <a href="#link3" className="hover:text-gray-400">
+                  Roadmap
+                </a>
+                <a href="#link3" className="hover:text-gray-400">
+                  Endless Ranger Awakening
+                </a>
+                <a href="#link3" className="hover:text-gray-400">
+                  Brain
+                </a>
+                <a href="#link3" className="hover:text-gray-400">
+                  Dracarys
+                </a>
+              </div>
+
+              {/* Dikey Çizgi */}
+              <div className="border-[1px] border-gray-700 self-stretch"></div>
+
+              {/* Sağ Kolon - Platform Listesi */}
+              <div className="flex flex-col gap-5 items-start text-white">
+                <h1 className={`${archivo_black} font-bold text-lg`}>
+                  Available Platforms:
+                </h1>
+
+                {/* Liste şeklinde platformları gösteriyoruz */}
+                <ul className="list-none space-y-2 w-full">
+                  {data?.data?.attributes?.Footer?.AvailableOn.map(
+                    (platform) => (
+                      <li
+                        key={platform.id}
+                        className="border-b border-gray-700 pb-2"
+                      >
+                        <a
+                          href={platform.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center space-x-4"
+                        >
+                          <img
+                            src={
+                              platform.PlaceImage.data.attributes.formats
+                                .thumbnail.url
+                                ? getStrapiMedia(
+                                    platform.PlaceImage.data.attributes.formats
+                                      .thumbnail
+                                  )
+                                : "/path/to/default_image.png"
+                            }
+                            alt={platform.PlaceImage.data.attributes.name}
+                            style={{
+                              width: "30px",
+                              height: "30px",
+                              borderRadius: 500,
+                            }}
+                          />
+                          <span className="whitespace-nowrap">
+                            {platform.name}
+                          </span>
+                        </a>
+                      </li>
+                    )
+                  )}
+                </ul>
+              </div>
+            </div>
+
+            {/* Image Section with Logos Positioned on Top */}
+            <div className="relative flex flex-col gap-y-8">
+              {/* CMC'den alınan veriyi burada gösteriyoruz */}
+              <div className="flex flex-row gap-8 items-center">
+                {/* Image */}
+                <Image src={BRNLogo} alt={""} height={100} width={100} />
+
+                {/* Error Display */}
+                {error && <p className="text-red-500">{error}</p>}
+
+                {/* Coin Data */}
+                {coinData ? (
+                  <div className="relative flex flex-col justify-center">
+                    <h2
+                      className={`${archivo_black.className} font-bold text-2xl self-center`}
+                    >
+                      $BRN Price:
+                    </h2>
+                    <h3
+                      className={`${archivo_black.className} font-bold text-2xl bg-clip-text text-transparent bg-gradient-to-r from-[#3B82F6] via-[#7B3FE4] to-[#22D3EE] self-center`}
+                    >
+                      ${coinData.data?.BRN[0]?.quote?.USD?.price?.toFixed(4)}
+                    </h3>
+                  </div>
+                ) : (
+                  <p>Yükleniyor...</p>
+                )}
+              </div>
+
+              <div className="border-b border-gray-700 pb-2"></div>
+
+              {/* Sosyal Medya Logolarını Burada Görüntüleyin */}
+              <div className="flex justify-center space-x-6">
+                {data?.data?.attributes?.Social?.map((social) => (
+                  <a
+                    key={social.id}
+                    href={social.url}
                     target="_blank"
-                    href={
-                      social.name == "Discord"
-                        ? "https://discord.gg/sS5KJeE8Ps"
-                        : social.name == "Instagram"
-                        ? "https://www.instagram.com/brnmetaverse?igsh=MW80aDgzb3p4a3hwMA=="
-                        : social.url
-                    }
+                    rel="noopener noreferrer"
+                    className={`relative hover:scale-110 transition-transform ${
+                      social.name === "Instagram"
+                        ? "instagram-hover"
+                        : social.name === "Youtube"
+                        ? "youtube-hover"
+                        : social.name === "X"
+                        ? "x-hover"
+                        : social.name === "Telegram"
+                        ? "telegram-hover"
+                        : social.name === "Discord"
+                        ? "discord-hover"
+                        : ""
+                    }`}
                   >
-                    <Image
-                      src={`https://test.brntoken.net/${social.icon_path}`}
+                    <img
+                      src={getStrapiMedia(social.Icon.data.attributes)}
                       alt={social.name}
-                      height={30}
-                      width={30}
+                      style={{ width: "40px", height: "40px" }}
                     />
-                  </Link>
-                );
-              })}
+                  </a>
+                ))}
+              </div>
             </div>
           </div>
         </div>

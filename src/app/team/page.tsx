@@ -113,7 +113,7 @@ export default function Team() {
   const [{ token: tokenInformation }] = useConfig("token");
   const [data, setData] = useState<TeamPageData>();
 
-  let API_HOST = "http://localhost:1337/";
+  let API_HOST = "http://51.20.121.61:1337/";
 
   useEffect(() => {
     const fetchHomeData = async () => {
@@ -150,49 +150,45 @@ export default function Team() {
       <div className={"flex justify-center items-center min-h-[100vh] py-16"}>
         <div
           className={
-            "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-[90vw] md:w-[80vw] lg:w-[65vw]"
+            "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 gap-x-20 w-[90vw] md:w-[80vw] lg:w-[65vw]"
           }
         >
           {data?.data?.attributes?.TeamBlocks?.sort(
             (a: any, b: any) => a.order_index - b.order_index
           ).map((member: any, index) => (
-            <div
-              key={index}
-              className={"relative bg-primary-dark rounded-lg p-3"}
-            >
-              <div className={"relative h-[350px] rounded-lg overflow-hidden"}>
-                <img
-                  src={
-                    member?.Photo?.data?.attributes?.formats?.large?.url
-                      ? getStrapiMedia(
-                          member?.Photo?.data?.attributes?.formats?.large
-                        )
-                      : "/default/path/to/coinsites.webp"
-                  }
-                  alt={member.NameSurname}
-                  className={"object-cover object-top w-full h-full"}
-                />
-              </div>
-              <div className={"text-center py-8"}>
-                <h3 className={`${archivo_black.className} uppercase text-xl`}>
-                  {member.NameSurname}
-                </h3>
-                <p className={"text-accent"}>{member.Position}</p>
-              </div>
+            <div key={index}>
+              <div className="relative bg-primary-dark rounded-lg p-3 card">
+                <div className="h-[350px] rounded-lg overflow-hidden">
+                  <img
+                    src={
+                      member?.Photo?.data?.attributes?.formats?.large?.url
+                        ? getStrapiMedia(
+                            member?.Photo?.data?.attributes?.formats?.large
+                          )
+                        : "/default/path/to/coinsites.webp"
+                    }
+                    alt={member.NameSurname}
+                    className="object-cover object-top w-full h-full"
+                  />
+                </div>
+                <div className="text-center mt-4">
+                  <h3
+                    className={`${archivo_black.className} uppercase text-xl`}
+                  >
+                    {member.NameSurname}
+                  </h3>
+                  <p className="text-accent">{member.Position}</p>
+                </div>
 
-              <div
-                className={
-                  "absolute left-[50%] bottom-[-5%] translate-x-[-50%]"
-                }
-              >
-                <Link
-                  href={member.url}
-                  className={
-                    "flex items-center justify-center border-[10px] border-primary h-[70px] w-[70px] bg-accent rounded-full"
-                  }
-                >
-                  <FiLinkedin size={22} />
-                </Link>
+                {/* LinkedIn Butonu */}
+                <div className="absolute inset-x-0 bottom-[-40px] flex justify-center">
+                  <Link
+                    href={member.url}
+                    className="flex items-center justify-center border-[5px] border-primary h-[62px] w-[62px] bg-accent rounded-full"
+                  >
+                    <FiLinkedin size={22} />
+                  </Link>
+                </div>
               </div>
             </div>
           ))}

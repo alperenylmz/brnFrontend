@@ -7,6 +7,7 @@ import {useEffect, useRef, useState} from "react";
 //import useMarkets from "@/hooks/useMarkets";
 import {BiMapPin} from "react-icons/bi";
 import {GiNinjaHeroicStance} from "react-icons/gi";
+import useMarkets from "@/hooks/useMarkets";
 
 const Navigation = ()=> {
     const [showNavigation, setShowNavigation] = useState(false);
@@ -18,9 +19,9 @@ const Navigation = ()=> {
     const [showGameDropdown, setShowGameShowDropdown] = useState(0);
     const showDropdownRef = useRef(showDropdown);
     const showGameDropdownRef = useRef(showGameDropdown);
-    //const [markets] = useMarkets();
+    const [markets] = useMarkets();
 
-    let API_HOST = 'http://localhost:1337/';
+    let API_HOST = "https://test.brntoken.net";
 
 
     useEffect(() => {
@@ -33,7 +34,7 @@ const Navigation = ()=> {
     },[]);
 
     return (
-            <div className={`${(modalIslOpen || gameModalIslOpen) ? 'bg-transparent':'bg-primary-dark' } md:bg-transparent md:h-auto flex items-start justify-center w-[100vw] overflow-x-clip`}>
+            <div className={`${(modalIslOpen || gameModalIslOpen) ? 'z-100 bg-transparent':'bg-primary-dark' } md:bg-transparent md:h-auto flex z-100 items-start justify-center w-[100vw] overflow-x-clip`}>
                 {
                     (modalIslOpen || gameModalIslOpen) && (
                     <div className={'min-h-screen bg-red-500'} />
@@ -54,13 +55,13 @@ const Navigation = ()=> {
                         <div className={'md:hidden absolute top-[30px] right-[30px]'}>
                             <button onClick={toggleNavigation} className={'p-3 bg-accent rounded-full'}><FiX size={22}/></button>
                         </div>
-                        <div className={`flex flex-col md:flex-row items-center justify-center gap-5 h-full`}>
+                        <div className={`flex flex-col z-50 md:flex-row items-center justify-center gap-5 h-full`}>
                             {
                                 [
                                     {url: '/', text: 'Home'},
                                     {url: '/token', text: 'BRN'},
                                     {url: '#', text: '', component: (
-                                            <div className={'md:flex relative cursor-pointer'} key={Date.now()}>
+                                            <div className={'md:flex relative z-50 cursor-pointer'} key={Date.now()}>
                                                 <div className={`group relative ${poppins.bold.className}`}
                                                      onMouseLeave={()=>{
                                                          setTimeout(()=>{
@@ -140,20 +141,20 @@ const Navigation = ()=> {
                                         }
                                     }, 300)
                                 }} onMouseEnter={()=> setShowDropdown(1)}>
-                                    <button className={'bg-white text-primary p-2 rounded-lg min-w-[100px] text-center'}>Buy</button>
+                                    <button className={'bg-white z-50 text-primary p-2 rounded-lg min-w-[100px] text-center'}>Buy</button>
 
                                     <div
                                         onMouseLeave={()=> setShowDropdown(0)}
                                         onMouseEnter={()=> setShowDropdown(2)} id={'dropdown'}
                                         className={`transition-all absolute  overflow-clip ${showDropdown > 0 ? 'flex opacity-100 visible top-12':'opacity-0 invisible top-32'} flex-col z-40 w-[250px] h-auto bg-primary rounded-xl`}>
-                                        {/*markets.map((listing, index) => (
+                                        {markets.map((listing, index) => (
                                             <a href={listing.token_url} target={'_blank'} key={index} className={'hover:bg-cDark'}>
                                                 <div className={`flex gap-3 items-center p-3 text-sm ${poppins.bold.className} border-b border-primary-light hover:bg-primary-dark`}>
                                                     <Image src={`${API_HOST}${listing.image_path}`} height={30} width={30} className={'rounded-full'} alt={listing.label}/>
                                                     {listing.name}
                                                 </div>
                                             </a>
-                                        ))*/}
+                                        ))}
                                     </div>
                                 </div>
                             </div>
@@ -178,7 +179,7 @@ const Navigation = ()=> {
                  BOTTOM MODAL PANEL  */}
 
                 {/*  BOTTOM GAME MODAL PANEL  */}
-                <div style={{position:'fixed'}} className={`lg:hidden fixed left-0 px-8 py-5 transition-all ${gameModalIslOpen ? 'bottom-0 opacity-100 visible' : 'bottom-[-100vh] invisible opacity-0'} items-center justify-center w-[100vw] bg-primary z-10`}>
+                <div style={{position:'fixed'}} className={`lg:hidden fixed left-0 px-8 py-5 transition-all ${gameModalIslOpen ? 'bottom-0 z-50 opacity-100 visible' : 'bottom-[-100vh] invisible opacity-0'} items-center justify-center w-[100vw] bg-primary z-10`}>
                     <div
                         className={`transition-all overflow-clip flex-col z-40 w-full h-auto bg-primary rounded-xl`}>
                         <Link href={'/game/hero'} className={'hover:bg-cDark'}

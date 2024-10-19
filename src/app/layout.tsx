@@ -21,7 +21,7 @@ function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body
-        className={`${poppins.regular.className} bg-primary text-white overflow-x-clip`}
+        className={`${poppins.regular.className} bg-primary-dark text-white overflow-x-clip`}
       >
         <div
           className={
@@ -31,7 +31,7 @@ function RootLayout({ children }: { children: React.ReactNode }) {
           <Navigation />
         </div>
         {children}
-        <div
+        {/*<div
           title="Join BRN Tap"
           className={
             "flex justify-center fixed bottom-5  right-[185px] lg:right-[200px] bg-primary rounded-full w-[60px] z-[999]"
@@ -47,7 +47,7 @@ function RootLayout({ children }: { children: React.ReactNode }) {
               />
             </div>
           </Link>
-        </div>
+        </div>*/}
         <div
           className={
             "flex justify-center fixed bottom-5 right-5 p-3 lg:p-5 bg-primary rounded-full min-w-[150px] border border-gray-100 z-[999]"
@@ -60,7 +60,9 @@ function RootLayout({ children }: { children: React.ReactNode }) {
             </div>
           </Link>
         </div>
-        <Footer />
+        <div className="bg-primary">
+          <Footer />
+        </div>
       </body>
     </html>
   );

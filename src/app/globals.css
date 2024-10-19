@@ -1,11 +1,14 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import url(https://fonts.googleapis.com/css?family=Pacifico);
 
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
+  --card-height: 60vh;
+  --card-width: calc(var(--card-height) / 1.5);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -20,9 +23,8 @@ body {
   color: rgb(var(--foreground-rgb));
 }
 
-
 @layer utilities {
-  p{
+  p {
     @apply font-normal text-sm leading-[26px];
   }
 }
@@ -30,7 +32,6 @@ body {
 .bounce {
   animation: subtleBounce 1s ease-in-out infinite;
 }
-
 
 @keyframes subtleBounce {
   0% {
@@ -42,4 +43,246 @@ body {
   100% {
     transform: translateY(0);
   }
+}
+
+@property --rotate {
+  syntax: "<angle>";
+  initial-value: 132deg;
+  inherits: false;
+}
+
+/* Kart konteyneri */
+.card-container {
+  min-height: 100vh;
+  background: #212534;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  box-sizing: border-box;
+}
+
+/* Kart */
+.card {
+  background: #191c29;
+  width: var(--card-width);
+  height: var(--card-height);
+  padding: 3px;
+  position: relative;
+  border-radius: 6px;
+  justify-content: flex-start; /* İçerik baştan hizalanır */
+  align-items: center;
+  text-align: center;
+  display: flex;
+  flex-direction: column; /* Dikey hizalama sağlandı */
+  font-size: 1.5em;
+  color: rgb(88 199 250 / 100%);
+}
+
+/* Hover efekti kaldırıldı */
+.card:hover {
+  transition: color 1s;
+}
+
+/* Görsel ve yazı alanı */
+.card img {
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+}
+
+.card h3,
+.card p {
+  margin: 4px 0 0;
+}
+
+/* Arkaplan efektleri */
+.card::before {
+  content: "";
+  width: 104%;
+  height: 102%;
+  border-radius: 8px;
+  background-image: linear-gradient(
+    var(--rotate),
+    #5ddcff,
+    #3c67e3 43%,
+    #4e00c2
+  );
+  position: absolute;
+  z-index: -1;
+  top: -1%;
+  left: -2%;
+  animation: spin 2.5s linear infinite;
+}
+
+.card::after {
+  position: absolute;
+  content: "";
+  top: calc(var(--card-height) / 6);
+  left: 0;
+  right: 0;
+  z-index: -1;
+  height: 100%;
+  width: 100%;
+  margin: 0 auto;
+  transform: scale(0.8);
+  filter: blur(calc(var(--card-height) / 6));
+  opacity: 1;
+  transition: opacity 0.5s;
+  animation: spin 2.5s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    --rotate: 0deg;
+  }
+  100% {
+    --rotate: 360deg;
+  }
+}
+
+.background-html {
+  font-family: "Pacifico", cursive;
+}
+
+.background-body {
+  margin: 0;
+  overflow: hidden;
+  background-color: #000;
+}
+
+.typewriter {
+  height: 60px; /* Adjust height based on the maximum size of your text */
+  display: flex;
+  align-items: center; /* Center the text vertically */
+  justify-content: center; /* Center the text horizontally */
+}
+
+.typewriter h1 {
+  overflow: hidden;
+  border-right: 0.15em solid orange;
+  white-space: nowrap;
+  margin: 0 auto;
+  letter-spacing: 0.1em;
+  animation: blink-caret 0.75s step-end infinite;
+}
+
+@keyframes blink-caret {
+  from,
+  to {
+    border-color: transparent;
+  }
+  50% {
+    border-color: orange;
+  }
+}
+
+@keyframes bounce-slow {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.animate-bounce-slow {
+  animation: bounce-slow 3s infinite;
+}
+
+.bg-gradient-home {
+  background-image: linear-gradient(
+    135.58deg,
+    #000138 20%,
+    #581539 50%,
+    #000138 80%
+  );
+  background-position: center;
+  background-size: 150% 150%; /* Arka plan boyutunu genişlettik */
+  background-repeat: no-repeat;
+}
+
+.instagram-hover img {
+  transition: 0.3s ease;
+}
+
+.instagram-hover:hover img {
+  content: url("../../public/assets/images/instagram-icon-greadieant-01.svg"); /* Replace with the actual path */
+  filter: drop-shadow(
+    0 0 20px rgba(255, 99, 217, 0.4)
+  ); /* Daha transparan ve yumuşak gölge */
+  transform: scale(1.3); /* Optional to enhance the hover effect */
+}
+
+.youtube-hover img {
+  transition: 0.3s ease;
+}
+
+.youtube-hover:hover img {
+  content: url("../../public/assets/images/you-tube-logo-04.svg"); /* Replace with the actual path */
+  filter: drop-shadow(0 0 20px rgba(255, 99, 99, 0.4));
+  transform: scale(1.4); /* Optional to enhance the hover effect */
+}
+
+.telegram-hover img {
+  transition: 0.3s ease;
+}
+
+.telegram-hover:hover img {
+  content: url("../../public/assets/images/Telegram-01.svg"); /* Replace with the actual path */
+  filter: drop-shadow(0 0 20px rgba(30, 174, 231, 0.4));
+  transform: scale(1.4); /* Optional to enhance the hover effect */
+}
+
+.discord-hover img {
+  transition: 0.3s ease;
+}
+
+.discord-hover:hover img {
+  content: url("../../public/assets/images/Discord-01.svg"); /* Replace with the actual path */
+  filter: drop-shadow(0 0 20px rgba(114, 137, 218, 0.4));
+  transform: scale(1.4); /* Optional to enhance the hover effect */
+}
+
+.x-hover img {
+  transition: 0.3s ease;
+}
+
+.x-hover:hover img {
+  content: url("../../public/assets/images/twitter-x-seeklogo-3.svg"); /* Replace with the actual path */
+  filter: drop-shadow(0 0 20px rgba(184, 162, 162, 0.4));
+  transform: scale(1.7); /* Optional to enhance the hover effect */
+}
+
+@keyframes gradientCycle {
+  to {
+    background-position: 400%; /* Son konuma doğru hareket eder */
+  }
+}
+
+.animate-gradient {
+  background: linear-gradient(
+    90deg,
+    #5b1b9d,
+    /* Açık Koyu Mor */ #5a1d9e,
+    #6c2db2,
+    #5071cf,
+    #3b82f6,
+    #22a9e4,
+    #22d3ee,
+    #4dd6f1,
+    #76c8fa,
+    #22d3ee,
+    #22a9e4,
+    #5071cf,
+    #6c2db2,
+    #5a1d9e,
+    #5b1b9d /* Döngü Başa Döner, Açık Koyu Mor */
+  );
+
+  background-size: 400% 400%; /* Geniş bir alan ayarlıyoruz */
+  animation: gradientCycle 12s linear infinite; /* Sabit hızda, sonsuz döngüde */
+  backdrop-filter: blur(16px); /* Blur efekti ile daha yumuşak geçiş */
 }
