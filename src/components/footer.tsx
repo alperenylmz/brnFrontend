@@ -9,6 +9,7 @@ import { fetchAPI } from "@/lib/api";
 import { getStrapiMedia } from "@/lib/media";
 import { archivo_black } from "@/config/fonts";
 import BRNLogo from "../../public/favicon-16x16.png";
+import useMediaQuery from "@/hooks/useMediaQuery";
 
 // Image Formats Interface
 interface ApiResponse {
@@ -202,6 +203,7 @@ const Footer = () => {
 
   const [coinData, setCoinData] = useState<CoinResponse>();
   const [error, setError] = useState("");
+  const isMobile = useMediaQuery("(max-width: 768px)"); // Detect mobile screen size
 
   let API_HOST = "http://51.20.121.61:1337/";
 
@@ -289,7 +291,17 @@ const Footer = () => {
   return (
     <footer className="relative">
       {/* Particle Background */}
-      <div className="absolute min-h-full inset-0 z-0">
+      <div
+        className={`${
+          isMobile
+            ? "absolute z-0 h-full w-full object-cover"
+            : "absolute min-h-full inset-0 z-0"
+        }`}
+        style={{
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
         <ParticleBackground />
       </div>
 
@@ -347,15 +359,15 @@ const Footer = () => {
             }
           >
             <Image
-              src={"/assets/images/official-gmail-icon-2020-.svg"} // src={"/assets/images/googlemail.png"}
-              width={300}
-              height={270}
-              alt={""}
+              src={"/assets/images/official-gmail-icon-2020-.svg"} // Gmail logosunun yolu
+              width={isMobile ? 90 : 300} // Mobilde 100px, webde 300px genişlik
+              height={isMobile ? 80 : 270} // Mobilde 90px, webde 270px yükseklik
+              alt="Gmail Logo"
             />
           </div>
         </div>
 
-        <div className="relative flex items-center justify-center min-h-[320px] mt-12">
+        <div className="relative flex items-center justify-center min-h-[320px] mt-4">
           {/* İçerik */}
           <div className="relative z-10 flex flex-col md:flex-row items-center justify-between w-[90vw] lg:w-[80vw]">
             <div className="flex flex-row gap-8 items-start mt-8">
@@ -457,7 +469,9 @@ const Footer = () => {
             </div>
 
             {/* Image Section with Logos Positioned on Top */}
-            <div className="relative flex flex-col gap-y-8">
+            <div
+              className={`${isMobile ? "" : "gap-y-8"} relative flex flex-col`}
+            >
               {/* CMC'den alınan veriyi burada gösteriyoruz */}
               <div className="flex flex-row gap-8 items-center">
                 {/* Image */}
@@ -517,6 +531,14 @@ const Footer = () => {
                   </a>
                 ))}
               </div>
+
+              <div className="border-b border-gray-700 pb-2"></div>
+
+              <h3
+                className={`${archivo_black.className} font-bold text-sm bg-clip-text text-transparent bg-gradient-to-r from-[#3B82F6] via-[#7B3FE4] to-[#22D3EE] self-center`}
+              >
+                support@brntoken.net
+              </h3>
             </div>
           </div>
         </div>

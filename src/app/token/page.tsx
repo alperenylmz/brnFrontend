@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
-import { archivo_black } from "@/config/fonts";
-import { useEffect, useState } from "react";
+import { archivo_black, poppins } from "@/config/fonts";
+import { useEffect, useRef, useState } from "react";
 import useTokenAllocations from "@/hooks/useTokenAllocations";
 import useConfig from "@/hooks/useConfig";
 import formatNumber from "@/helpers";
@@ -16,6 +16,15 @@ import { FiCheck, FiCopy } from "react-icons/fi";
 import React from "react";
 import ParticleBackground from "@/components/particle-background";
 import Link from "next/link";
+import {
+  FaChevronLeft,
+  FaChevronRight,
+  FaCoins,
+  FaInfoCircle,
+  FaPercentage,
+} from "react-icons/fa";
+import TokenInfoSlide from "@/components/tokenInfoSlide";
+import useMediaQuery from "@/hooks/useMediaQuery";
 
 interface TokenPageData {
   data: {
@@ -304,6 +313,11 @@ export default function Token() {
   const [textCopied, setTextCopied] = useState(false);
   const [coinData, setCoinData] = useState<CoinResponse>();
   const [actualData, setActualData] = useState<ApiResponse>();
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const chartSectionRef = useRef<HTMLDivElement | null>(null); // Ana div için referans
+  const [isChartVisible, setIsChartVisible] = useState(false);
+  const [showTokenInfo, setShowTokenInfo] = useState(false);
+  const isMobile = useMediaQuery("(max-width: 768px)"); // Detect mobile screen size
 
   let API_HOST = "http://localhost:1337/";
 
@@ -356,27 +370,90 @@ export default function Token() {
     fetchCoinData();
   }, []);
 
+  const toggleDescription = (index: number) => {
+    setOpenIndex(openIndex === index ? null : index);
+  };
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsChartVisible(true); // Görünür olduğunda animasyonu başlat
+          } else {
+            setIsChartVisible(false); // Div görünmez olduğunda durdur
+          }
+        });
+      },
+      { threshold: 0.1 } // %10 görünürlükte tetiklenir
+    );
+
+    if (chartSectionRef.current) {
+      observer.observe(chartSectionRef.current);
+    }
+
+    return () => {
+      if (chartSectionRef.current) {
+        observer.unobserve(chartSectionRef.current);
+      }
+    };
+  }, []);
+
   return (
     <main className="bg-gradient-home -z-50">
+      <div
+        className={`flex items-center fixed ${
+          showTokenInfo ? "right-0" : "right-[-75vw] md:right-[-500px]"
+        } transition-all duration-500 ease-in-out top-[50%] translate-[-50%,-50%] z-[9999] w-[75vw] md:w-[500px] min-w-[200px] shadow-lg rounded-l-3xl`}
+      >
+        <button
+          onClick={() => setShowTokenInfo(!showTokenInfo)}
+          className={
+            "absolute left-[-70px] md:left-[-65px] flex flex-col items-center gap-4 bg-gradient-to-r from-[#3B82F6] to-[#7B3FE4] p-4 rounded-2xl shadow-md hover:scale-105 transition-transform duration-300 animate-gradient"
+          }
+        >
+          {showTokenInfo ? (
+            <FaChevronRight className="text-white" /> // Butonu yukarı değil, sola baktırıyoruz
+          ) : (
+            <FaChevronLeft className="text-white" /> // Butonu aşağı değil, sağa baktırıyoruz
+          )}
+          <span
+            className={`rotate-90 font-black text-sm md:text-lg text-white ${poppins.bold.className}`}
+          >
+            BRN
+          </span>
+        </button>
+
+        <TokenInfoSlide coinData={coinData} />
+      </div>
+
+      <div className="flex flex-col text-center items-center pt-28">
+        <div className="w-[90vw] lg:w-[40vw]">
+          <h2
+            className={`${archivo_black.className} uppercase md:text-center text-3xl lg:text-5xl font-bold mb-5`}
+          >
+            BRN
+          </h2>
+          <p className="text-white">
+            Join the future of finance and gaming with $BRN and embark on a
+            journey where your investments and passions align.
+          </p>
+        </div>
+      </div>
+
       <div className={"flex items-center justify-center min-h-[70vh]"}>
         <div
           className={
-            "grid grid-cols-1 z-50 lg:grid-cols-2 py-32 items-center justify-center w-[80vw] m-auto"
+            "grid grid-cols-1 z-50 lg:grid-cols-2 py-8 items-center justify-center w-[80vw] m-auto"
           }
         >
           <div className={""}>
-            <h2
-              className={`${archivo_black.className} uppercase text-3xl lg:text-5xl font-bold mb-5 text-secondary`}
-            >
-              BRN
-            </h2>
-            <p>
-              Join the future of finance and gaming with $BRN and embark on a
-              journey where your investments and passions align.
-            </p>
-
-            <div className={"flex gap-8 my-8"}>
-              <div className={"flex flex-col"}>
+            <div className={`flex ${isMobile ? "flex-col gap-4" : "gap-4"} w-full`}>
+              <div
+                className={
+                  "flex flex-col bg-gray-500 bg-opacity-50 p-4 rounded-lg w-full"
+                }
+              >
                 <h3
                   className={`${archivo_black.className} uppercase text-4xl font-bold text-white`}
                 >
@@ -387,7 +464,12 @@ export default function Token() {
                 </h3>
                 <p className={"text-sm"}>TOTAL SUPPLY</p>
               </div>
-              <div className={"flex flex-col"}>
+
+              <div
+                className={
+                  "flex flex-col bg-gray-500 bg-opacity-50 p-4 rounded-lg w-full"
+                }
+              >
                 <h3
                   className={`${archivo_black.className} uppercase text-4xl font-bold text-white`}
                 >
@@ -398,96 +480,99 @@ export default function Token() {
                 </h3>
                 <p className={"text-sm"}>MAX SUPPLY</p>
               </div>
-            </div>
 
-            <div className="relative w-[80vw] md:w-auto inline-block p-1 rounded-2xl">
-              {/* Gradient background */}
-              <div className="absolute inset-0 animate-gradient rounded-2xl z-[-1]"></div>
-
-              {/* İçerik */}
-              <div className="relative z-[1] bg-primary-light rounded-2xl p-5">
-                <div className="flex flex-col">
-                  <h3
-                    className={`${archivo_black.className} uppercase text-4xl font-bold text-white`}
-                  >
-                    18
-                  </h3>
-                  <p className="text-sm uppercase">
-                    {data?.data?.attributes?.CoinCode?.DecimalText}
-                  </p>
-                </div>
-
-                <div
-                  style={{ transitionDelay: "5s" }}
-                  className="flex items-center justify-between gap-3 bg-primary-light text-white rounded-lg font-bold text-sm w-full"
+              <div
+                className={
+                  "flex flex-col bg-gray-500 bg-opacity-50 p-4 rounded-lg w-full"
+                }
+              >
+                <h3
+                  className={`${archivo_black.className} uppercase text-4xl font-bold text-white`}
                 >
-                  <span>0x926ecC7687fCFB296E97a2b4501F41A6f5F8C214</span>
-                  <button
-                    disabled={textCopied}
-                    onClick={async () => {
-                      await navigator.clipboard.writeText(
-                        tokenInformation?.address
-                      );
-                      setTextCopied(true);
-                      setTimeout(() => {
-                        setTextCopied(false);
-                      }, 3000);
-                    }}
-                    className="bg-white p-2 rounded-lg text-accent"
-                  >
-                    {textCopied ? <FiCheck size={22} /> : <FiCopy size={22} />}
-                  </button>
-                </div>
+                  $
+                  {coinData?.data?.BRN[0]?.quote?.USD?.price
+                    ? coinData.data.BRN[0].quote.USD.price.toFixed(4)
+                    : "N/A"}
+                </h3>
+                <p className={"text-sm"}>PRICE</p>
               </div>
             </div>
 
-            {/*</div>*/}
-            <div className={"flex justify-center mt-16"}>
-              <div
-                className={
-                  "flex justify-center w-full lg:w-[70vw] h-[20px] rounded-full"
-                }
-              >
+            <div className="relative w-[80vw] md:w-auto inline-block p-1 rounded-2xl">
+              <div className="grid grid-cols-2 items-center justify-center gap-10 lg:gap-16 mt-8">
                 {Array.from(tokenAllocations).map((token: any, index) => (
                   <div
-                    style={{
-                      backgroundColor: token.attributes.Color, // Color değerine doğru erişim
-                      width: `${token.attributes.Percentage + 5}%`, // +5 ekleme yapılıyor
-                      zIndex: 100 - index,
-                    }}
                     key={index}
-                    className={`h-[20px] rounded-full ${
-                      index > 0 ? "ml-[-15px] lg:ml-[-15px]" : ""
-                    }`}
-                  />
+                    className="flex flex-col items-start relative"
+                  >
+                    <div className="flex items-center gap-4">
+                      {" "}
+                      {/* Aradaki boşluğu artırdık */}
+                      {/* Info icon */}
+                      <button
+                        onClick={() => toggleDescription(index)}
+                        className="text-gray-600 hover:text-gray-800"
+                      >
+                        <FaInfoCircle color="white" /> {/* Info icon */}
+                      </button>
+                      {/* Renkli kutu */}
+                      <div
+                        style={{ backgroundColor: token.attributes.Color }}
+                        className={`p-5 rounded-xl`}
+                      />
+                      {/* Token Bilgileri */}
+                      <div className="flex flex-col items-start gap-0">
+                        <span className="text-sm">
+                          {token?.attributes?.Title}
+                        </span>
+                        <span className="text-sm font-black">
+                          {token?.attributes?.Percentage}%
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Açıklama kısmı */}
+                    {openIndex === index && (
+                      <div
+                        className={`absolute left-10 top-6 p-3 bg-gray-100 rounded-lg shadow-lg w-[250px] z-10 transition-transform transform-gpu scale-95 opacity-0 ${
+                          openIndex === index
+                            ? "scale-100 opacity-100"
+                            : "scale-95 opacity-0"
+                        }`}
+                        style={{ transition: "all 0.3s ease-out" }}
+                      >
+                        <p className="text-sm text-gray-700">
+                          {token?.attributes?.Description ||
+                            "No description available"}
+                        </p>
+                      </div>
+                    )}
+                  </div>
                 ))}
               </div>
             </div>
           </div>
           <div
-            className={
-              "relative flex flex-col justify-start items-center h-full w-full"
-            }
+            ref={chartSectionRef}
+            className={"relative flex flex-col justify-start items-center"}
           >
-            <img
-              src={
-                data?.data?.attributes?.LineGraph?.data?.attributes?.url
-                  ? getStrapiMedia(
-                      data?.data?.attributes?.LineGraph?.data?.attributes
-                    )
-                  : "/default/path/to/coinsites.webp"
-              }
-              alt={""}
-              className="absolute inset-0 w-full h-full object-contain"
-            />
+            {/* Chart Section */}
+            <div className="flex justify-center items-center">
+              {isChartVisible && (
+                <TokenAllocation
+                  allocations={tokenAllocations}
+                  sx={{ height: "100%" }}
+                />
+              )}
+            </div>
           </div>
         </div>
       </div>
 
-      {/*<div
-        className={`flex flex-col z-100 lg:flex-row items-start md:items-center justify-center gap-3 lg:gap-5 w-[90vw] lg:w-[80vw] m-auto mt-10 my-5`}
+      <div
+        className={`flex flex-col z-100 lg:flex-row items-start md:items-center justify-center gap-3 lg:gap-5 w-[90vw] py-8 lg:w-[80vw] m-auto`}
       >
-        {data?.data?.attributes?.ChartSection?.CoinLinks?.map(
+        {actualData?.data?.attributes?.ListedOn?.map(
           (coin: any, index: number) => (
             <a href={coin.url} target={"_blank"} key={index}>
               <div
@@ -497,26 +582,25 @@ export default function Token() {
               >
                 <img
                   src={
-                    coin?.PlaceImage?.data?.attributes?.formats?.thumbnail?.url
+                    coin?.Image?.data?.attributes?.formats?.thumbnail?.url
                       ? getStrapiMedia(
-                          coin.PlaceImage?.data?.attributes?.formats?.thumbnail
+                          coin.Image?.data?.attributes?.formats?.thumbnail
                         )
                       : "/default/path/to/coinsites.webp"
                   }
-                  height={30}
-                  width={30}
+                  height={200}
+                  width={200}
                   className={"rounded-full"}
                   alt={coin.name}
                 />
-                {coin.name}
               </div>
             </a>
           )
         )}
-      </div> */}
+      </div>
 
       {/* STRATEGIC PRIORITIES */}
-      <div className="flex flex-col items-center py-32 min-h-screen">
+      <div className="flex flex-col items-center py-16 min-h-screen">
         <div className="w-[90vw] lg:w-[40vw] md:text-center pb-24">
           <h2
             className={`${archivo_black.className} uppercase text-3xl lg:text-5xl font-bold mb-5 text-white`}
@@ -557,7 +641,7 @@ export default function Token() {
 
                 {/* Title Section */}
                 <h3
-                  className={`${archivo_black.className} text-2xl text-cyan-400 font-bold text-center mb-4`}
+                  className={`${archivo_black.className} text-2xl text-secondary font-bold text-center mb-4`}
                 >
                   {block.StrategicTitle}
                 </h3>
@@ -588,198 +672,77 @@ export default function Token() {
         </div>
       </div>
 
-      {/* LISTED ON */}
-      <div className="transition-opacity flex flex-col items-center py-24">
-        <div className={"w-[90vw] lg:w-[40vw] md:text-center mb-12"}>
-          <h2
-            className={`${archivo_black.className} uppercase text-3xl lg:text-5xl font-bold mb-5 text-white`}
-          >
-            Listed <span className={"text-secondary"}>On</span>
-          </h2>
-        </div>
-
-        <div
-          className={
-            "grid grid-cols-1 md:grid-cols-2 gap-8 lg:grid-cols-4 items-start justify-start md:justify-center mt-8 w-[90vw]"
-          }
+      <div className="flex justify-center items-center gap-12">
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://whitepaper.brnmetaverse.net/"
+          className="bg-transparent text-white text-lg p-5 rounded-full text-center w-[170px] hover:bg-gray-200/20 transition-colors duration-300"
         >
-          {actualData?.data?.attributes?.ListedOn?.length ? (
-            actualData?.data?.attributes?.ListedOn?.sort(
-              (a: any, b: any) => (a.order_index || 0) - (b.order_index || 0)
-            ).map((block: any, index: number) => (
-              <Link
-                key={index}
-                href={block?.url}
-                target={"_blank"}
-                className="h-full transition-transform min-h-[300px] duration-300 ease-in-out hover:scale-105 hover:shadow-lg"
-              >
-                <div className="bg-white bg-opacity-10 backdrop-blur-md min-w-[300px] p-6 rounded-lg h-full text-center hover:bg-opacity-20 hover:shadow-lg transition-all duration-300">
-                  <div className="relative mb-4">
-                    <img
-                      className="h-[100px] w-[200px] object-contain mx-auto"
-                      src={
-                        block?.Image?.data?.attributes
-                          ? getStrapiMedia(
-                              block.Image.data.attributes.formats?.thumbnail ||
-                                {}
-                            )
-                          : "/default/path/to/coinsites.webp"
-                      }
-                      alt={block.Description || "Partner Icon"}
-                    />
-                  </div>
-                  <p className="text-white text-lg text-justify">
-                    {block.Description || "No description available"}
-                  </p>
-                </div>
-              </Link>
-            ))
-          ) : (
-            <p className="text-white">No partners available.</p>
-          )}
-        </div>
+          WhitePaper
+        </a>
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://www.brnmetaverse.net/assets/docs/legal-opinion.pdf"
+          className="bg-transparent text-white text-lg p-5 rounded-full text-center w-[170px] hover:bg-gray-200/20 transition-colors duration-300"
+        >
+          Legal Opinion
+        </a>
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://github.com/interfinetwork/smart-contract-audits/blob/audit-updates/BRNMetaverse_0x926ecC7687fCFB296E97a2b4501F41A6f5F8C214.pdf"
+          className="bg-transparent text-white text-lg p-5 rounded-full text-center w-[170px] hover:bg-gray-200/20 transition-colors duration-300"
+        >
+          Audit
+        </a>
       </div>
 
-      <div
-        className={
-          "grid grid-cols-1 mt-[100px] md:grid-cols-[1fr_0.7fr] items-center justify-center m-auto w-[90vw] lg:w-[60vw] min-h-[70vh] pb-24"
-        }
-      >
-        <div className={"relative h-[400px] md:h-[800px]"}>
-          <img
-            src={
-              data?.data?.attributes?.ChartSection?.ChartImage?.data?.attributes
-                ?.formats?.large?.url
-                ? getStrapiMedia(
-                    data?.data?.attributes?.ChartSection?.ChartImage?.data
-                      ?.attributes?.formats?.large
-                  )
-                : "/default/path/to/coinsites.webp"
-            }
-            className="w-full h-full object-contain"
-            alt="Tokenomics"
+      <div className="flex flex-col items-center pb-16">
+        {/* Image */}
+        <div className="relative w-full max-w-4xl h-[600px]">
+          {/* Genişliği %100 ve maksimum genişlik */}
+          <Image
+            src="/assets/images/Stake.png"
+            alt={"Stake"}
+            fill
+            className="rounded-lg object-contain"
           />
-          {/* <TokenAllocation
-                    allocations={tokenAllocations}
-                    sx={{ height: '100%' }}
-                /> */}
         </div>
-        <div id={"stats"} className={"mt-14 lg:mt-0"}>
-          <div className={"grid grid-cols-1 md:grid-cols-3 gap-5"}>
-            <div
-              className={"flex flex-col gap-2 bg-primary-light p-3 rounded-lg"}
-            >
-              <div className={"flex flex-wrap items-center justify-between"}>
-                <span className={"text-xl font-bold"}>
-                  {coinData?.data?.BRN[0]?.quote?.USD?.price?.toFixed(4)}
-                </span>
-              </div>
-              <span className={"text-sm"}>BRN Price</span>
-            </div>
-            <div
-              className={"flex flex-col gap-2 bg-primary-light p-3 rounded-lg"}
-            >
-              <span className={"text-xl font-bold"}>
-                {coinData?.data?.BRN[0]?.total_supply
-                  ? (coinData.data.BRN[0].total_supply / 1e6).toFixed(1)
-                  : "N/A"}
-              </span>
-              <span className={"text-sm"}>Total Supply</span>
-            </div>
-            <div
-              className={"flex flex-col gap-2 bg-primary-light p-3 rounded-lg"}
-            >
-              <span className={"text-xl font-bold"}>
-                {coinData?.data?.BRN[0]?.max_supply
-                  ? (coinData.data.BRN[0].max_supply / 1e6).toFixed(1)
-                  : "N/A"}
-              </span>
-              <span className={"text-sm"}>Max Supply</span>
-            </div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 lg:gap-8 mt-16">
-            <div className="flex items-center gap-3">
-              <div
-                className="bg-[#e83b43] p-5 rounded-xl"
-                style={{ backgroundColor: "rgb(232, 59, 67)" }}
-              />
-              <div className="flex flex-col items-start gap-0">
-                <span className="text-sm">Play to Earn</span>
-                <span className="text-sm font-black">20%</span>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <div
-                className="bg-[#00aaff] p-5 rounded-xl"
-                style={{ backgroundColor: "rgb(0, 170, 255)" }}
-              />
-              <div className="flex flex-col items-start gap-0">
-                <span className="text-sm">Stake</span>
-                <span className="text-sm font-black">35%</span>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <div
-                className="bg-[#0a9400] p-5 rounded-xl"
-                style={{ backgroundColor: "rgb(10, 148, 0)" }}
-              />
-              <div className="flex flex-col items-start gap-0">
-                <span className="text-sm">Liquidity</span>
-                <span className="text-sm font-black">5%</span>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <div
-                className="bg-[#fff700] p-5 rounded-xl"
-                style={{ backgroundColor: "rgb(255, 247, 0)" }}
-              />
-              <div className="flex flex-col items-start gap-0">
-                <span className="text-sm">Presale</span>
-                <span className="text-sm font-black">10%</span>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <div
-                className="bg-[#d226df] p-5 rounded-xl"
-                style={{ backgroundColor: "rgb(210, 38, 223)" }}
-              />
-              <div className="flex flex-col items-start gap-0">
-                <span className="text-sm">Brain</span>
-                <span className="text-sm font-black">10%</span>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <div
-                className="bg-[#ff7b00] p-5 rounded-xl"
-                style={{ backgroundColor: "rgb(255, 123, 0)" }}
-              />
-              <div className="flex flex-col items-start gap-0">
-                <span className="text-sm">Marketing</span>
-                <span className="text-sm font-black">8%</span>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <div
-                className="bg-[#3ec7ea] p-5 rounded-xl"
-                style={{ backgroundColor: "rgb(62, 199, 234)" }}
-              />
-              <div className="flex flex-col items-start gap-0">
-                <span className="text-sm">Airdrop</span>
-                <span className="text-sm font-black">2%</span>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <div
-                className="bg-[#fafafa] p-5 rounded-xl"
-                style={{ backgroundColor: "rgb(250, 250, 250)" }}
-              />
-              <div className="flex flex-col items-start gap-0">
-                <span className="text-sm">Ecosystem</span>
-                <span className="text-sm font-black">10%</span>
-              </div>
-            </div>
-          </div>
-        </div>
+
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://stake.brntoken.net/"
+          className="bg-transparent text-white text-lg p-5 rounded-full text-center w-[180px] hover:bg-gradient-to-r hover:from-[#7F3FF2] hover:via-[#4976E2] hover:to-[#00C0FF] transition-all duration-300 flex items-center justify-center gap-2"
+        >
+          <FaCoins />
+          Stake & Earn
+        </a>
+
+        {/*<div className="text-left">
+            <h3 className="font-bold flex items-center text-2xl mb-4 border-b border-gray-400 pb-2">
+              <FaPercentage className="mr-4" size={24} />
+              Stake <span className="text-secondary ml-2">Rates</span>
+            </h3>
+            <ul className="list-disc pl-6 mb-8 text-sm lg:text-xl leading-loose">
+              <li>2% for 30 days</li>
+              <li>7% for 90 days</li>
+              <li>15% for 180 days</li>
+              <li>35% for 1 year</li>
+            </ul>
+
+            <h3 className="font-bold flex items-center text-2xl mb-4 border-b border-gray-400 pb-2">
+              <FaCoins className="mr-4" size={24} />
+              Min Stake <span className="text-secondary ml-2">Amounts</span>
+            </h3>
+            <ul className="list-disc pl-6 text-sm lg:text-xl leading-loose">
+              <li>100 BRN and above can only be locked for 1 month.</li>
+              <li>500 BRN and above can only be locked for 1 or 3 months.</li>
+              <li>1000 BRN and above can be locked for 1, 3 or 6 months.</li>
+            </ul>
+          </div> */}
       </div>
     </main>
   );

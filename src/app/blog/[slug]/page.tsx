@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import Head from "next/head";
 import parse from "html-react-parser";
+import Seo from "@/components/seo";
 
 // Interface for the image formats
 interface ImageFormat {
@@ -39,6 +40,53 @@ interface CoverImage {
   data: CoverImageData | null;
 }
 
+// Interface for SEO shared image attributes
+interface SharedImageAttributes {
+  name: string;
+  alternativeText: string | null;
+  caption: string | null;
+  width: number;
+  height: number;
+  formats: {
+    thumbnail: ImageFormat;
+    small: ImageFormat;
+    medium: ImageFormat;
+    large: ImageFormat;
+  };
+  hash: string;
+  ext: string;
+  mime: string;
+  size: number;
+  url: string;
+  previewUrl: string | null;
+  provider: string;
+  provider_metadata: any | null;
+}
+
+// Interface for SEO shared image data
+interface SharedImageData {
+  id: number;
+  attributes: SharedImageAttributes;
+}
+
+// Interface for SEO shared image
+interface SharedImage {
+  data: SharedImageData | null;
+}
+
+// Interface for SEO information
+interface SeoAttributes {
+  id: number;
+  metaTitle: string;
+  metaDescription: string;
+  keywords: string;
+  SharedImage: {
+    id: number;
+    alt: string;
+    media: SharedImage;
+  };
+}
+
 // Interface for blog post attributes
 interface BlogPostAttributes {
   Description: string;
@@ -47,6 +95,8 @@ interface BlogPostAttributes {
   createdAt: string;
   publishedAt: string;
   updatedAt: string;
+  miniDescription: string;
+  Seo: SeoAttributes;
 }
 
 // Interface for a single blog post
@@ -55,11 +105,25 @@ interface BlogPostData {
   attributes: BlogPostAttributes;
 }
 
+// Interface for the pagination meta
+interface PaginationMeta {
+  page: number;
+  pageSize: number;
+  pageCount: number;
+  total: number;
+}
+
+// Interface for the API response meta
+interface ResponseMeta {
+  pagination: PaginationMeta;
+}
+
 // Interface for the API response
 interface BlogResponse {
   data: BlogPostData[];
-  meta: any;
+  meta: ResponseMeta;
 }
+
 
 // Interface for the component props
 interface PageProps {
@@ -75,7 +139,7 @@ const Page = (props: PageProps) => {
   useEffect(() => {
     if (props.params.slug) {
       fetch(
-        `${API_HOST}/api/blog-posts?filters[slug]=${props.params.slug}&populate[coverImage]=*`
+        `${API_HOST}/api/blog-posts?filters[slug]=${props.params.slug}&populate[coverImage]=*&populate[Seo][populate][SharedImage][populate][media]=*`
       )
         .then(async (res) => {
           if (!res.ok) {
@@ -100,9 +164,14 @@ const Page = (props: PageProps) => {
 
   return (
     <>
-      <Head>
-        <title>Blog | {blog?.attributes?.Title || "Loading..."}</title>
-      </Head>
+      {blog && blog.attributes.Seo && (
+        <Seo
+          metaTitle={blog.attributes.Seo.metaTitle}
+          metaDescription={blog.attributes.Seo.metaDescription}
+          ogImage={`${API_HOST}${blog.attributes.Seo.SharedImage?.media?.data?.attributes.url}`}
+          siteName="BRN Metaverse"
+        />
+      )}
       <main className="flex flex-col items-start justify-center min-h-[60vh] m-auto w-[80vw] py-32">
         {blog ? (
           <div>

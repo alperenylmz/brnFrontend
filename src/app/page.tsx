@@ -10,6 +10,17 @@ import {
   FaChevronRight,
   FaChevronUp,
 } from "react-icons/fa";
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  CardActions,
+  Grid,
+  Button,
+  Typography,
+  Chip,
+  Avatar,
+} from "@mui/material";
 import { useCallback, useEffect, useRef, useState } from "react";
 import useTokenAllocations from "@/hooks/useTokenAllocations";
 import useConfig from "@/hooks/useConfig";
@@ -32,6 +43,7 @@ import ParticleBackground from "@/components/particle-background";
 import HomeIcon from "../../public/assets/images/home1.png";
 import DraLogo from "../../public/assets/images/DRALogo.png";
 import EraLogo from "../../public/assets/images/eralogo.png";
+import useMediaQuery from "@/hooks/useMediaQuery";
 
 interface HomePageData {
   data: {
@@ -290,6 +302,7 @@ export default function Home() {
   const roadmapRef = useRef(null);
   const joinRef = useRef(null);
   const partnersRef = useRef(null);
+  const isMobile = useMediaQuery("(max-width: 768px)"); // Detect mobile screen size
 
   let API_HOST = "https://test.brntoken.net";
 
@@ -382,11 +395,11 @@ export default function Home() {
         threshold: 0.15, // %15 görünürlükte tetikler
       }
     );
-  
+
     if (roadmapRef.current) {
       roadmapObserver.observe(roadmapRef.current);
     }
-  
+
     return () => {
       if (roadmapRef.current) {
         roadmapObserver.unobserve(roadmapRef.current);
@@ -410,11 +423,11 @@ export default function Home() {
         threshold: 0.15, // %15 görünürlükte tetikler
       }
     );
-  
+
     if (partnersRef.current) {
       partnersObserver.observe(partnersRef.current);
     }
-  
+
     return () => {
       if (partnersRef.current) {
         partnersObserver.unobserve(partnersRef.current);
@@ -438,18 +451,17 @@ export default function Home() {
         threshold: 0.15, // %15 görünürlükte tetikler
       }
     );
-  
+
     if (joinRef.current) {
       joinObserver.observe(joinRef.current);
     }
-  
+
     return () => {
       if (joinRef.current) {
         joinObserver.unobserve(joinRef.current);
       }
     };
   }, []);
-  
 
   useEffect(() => {
     if (videoRef.current && videoRef.current.currentTime > 0) {
@@ -468,7 +480,7 @@ export default function Home() {
       <div
         className={`flex items-center fixed ${
           showTokenInfo ? "right-0" : "right-[-75vw] md:right-[-500px]"
-        } transition-all duration-500 ease-in-out top-[50%] translate-[-50%,-50%] z-[9999] w-[75vw] md:w-[500px] min-w-[200px] bg-gradient-to-r from-[#081850] to-[#1C245B] shadow-lg rounded-l-3xl`}
+        } transition-all duration-500 ease-in-out top-[50%] translate-[-50%,-50%] z-[9999] w-[75vw] md:w-[500px] min-w-[200px] shadow-lg rounded-l-3xl`}
       >
         <button
           onClick={() => setShowTokenInfo(!showTokenInfo)}
@@ -477,9 +489,9 @@ export default function Home() {
           }
         >
           {showTokenInfo ? (
-            <FaChevronLeft className="text-white" /> // Butonu yukarı değil, sola baktırıyoruz
+            <FaChevronRight className="text-white" /> // Butonu yukarı değil, sola baktırıyoruz
           ) : (
-            <FaChevronRight className="text-white" /> // Butonu aşağı değil, sağa baktırıyoruz
+            <FaChevronLeft className="text-white" /> // Butonu aşağı değil, sağa baktırıyoruz
           )}
           <span
             className={`rotate-90 font-black text-sm md:text-lg text-white ${poppins.bold.className}`}
@@ -522,7 +534,12 @@ export default function Home() {
             ABOUT <span className={"text-secondary"}>US</span>
           </h2>
         </div>
-        <div className="relative py-4 lg:min-h-[700px] w-full flex items-center gap-6 justify-between px-12 lg:px-32">
+
+        <div
+          className={`relative py-4 lg:min-h-[700px] w-full flex ${
+            isMobile ? "flex-col" : "flex-row"
+          } items-center gap-6 justify-between px-4 lg:px-32`}
+        >
           {/* Text Section */}
           <div className="justify-start w-full">
             <p className="text-lg text-justify lg:text-xl">
@@ -550,9 +567,13 @@ export default function Home() {
           </div>
 
           {/* Video Section */}
-          <div className="flex items-center justify-end w-full">
+          <div
+            className={`flex items-center ${
+              isMobile ? "justify-center" : "justify-end"
+            } w-full`}
+          >
             <div
-              className=" shadow-xl border-transparent rounded-lg overflow-hidden transition-transform duration-300"
+              className="shadow-xl border-transparent rounded-lg overflow-hidden transition-transform duration-300"
               style={{
                 width: "90%", // Yüzdesel genişlik ayarı
                 boxShadow: "0 0 20px 5px rgba(58, 123, 253, 0.6)", // Light glow effect
@@ -608,7 +629,9 @@ export default function Home() {
               </div>
 
               {/* Project Title */}
-              <h3 className={`${archivo_black.className} text-2xl text-cyan-400 font-bold text-center mb-4`}>
+              <h3
+                className={`${archivo_black.className} text-2xl text-cyan-400 font-bold text-center mb-4`}
+              >
                 {project.Title}
               </h3>
 
@@ -906,7 +929,11 @@ export default function Home() {
             isPartnersVisible ? "opacity-100" : "opacity-0"
           }`}
         >
-          <div className={"w-[90vw] lg:w-[40vw] md:text-center mb-12"}>
+          <div
+            className={`w-[90vw] lg:w-[40vw] ${
+              isMobile ? "text-center" : "md:text-center"
+            } mb-12`}
+          >
             <h2
               className={`${archivo_black.className} uppercase text-3xl lg:text-5xl font-bold mb-5 text-white`}
             >
@@ -920,96 +947,187 @@ export default function Home() {
           </div>
 
           <div
-            className={
-              "grid grid-cols-1 md:grid-cols-2 gap-8 lg:grid-cols-4 items-start justify-start md:justify-center mt-8 w-[90vw]"
-            }
+            className={`grid grid-cols-1 md:grid-cols-2 gap-8 lg:grid-cols-3 items-start ${
+              isMobile ? "justify-center" : "justify-start"
+            } mt-8 w-[90vw]`}
           >
             {data?.data?.attributes?.Partners?.length ? (
               data.data.attributes.Partners.sort(
                 (a: any, b: any) => (a.order_index || 0) - (b.order_index || 0)
               ).map((block: any, index: number) => (
-                <Link
-                  key={index}
-                  href={block?.url}
-                  target={"_blank"}
-                  className="h-full transition-transform min-h-[300px] duration-300 ease-in-out hover:scale-105 hover:shadow-lg"
-                >
-                  <div className="bg-white bg-opacity-10 backdrop-blur-md min-w-[300px] p-6 rounded-lg h-full text-center hover:bg-opacity-20 hover:shadow-lg transition-all duration-300">
-                    <div className="relative mb-4">
-                      <img
-                        className="h-[100px] w-[200px] object-contain mx-auto"
-                        src={
-                          block?.PartnerIcon?.data?.attributes
-                            ? getStrapiMedia(
-                                block.PartnerIcon.data.attributes.formats
-                                  ?.thumbnail || {}
-                              )
-                            : "/default/path/to/coinsites.webp"
-                        }
-                        alt={block.PartnerDescription || "Partner Icon"}
-                      />
-                    </div>
-                    <p className="text-white text-lg text-justify">
-                      {block.PartnerDescription || "No description available"}
-                    </p>
-                  </div>
+                <Link key={index} href={block?.url} target={"_blank"}>
+                  <Card
+                    sx={{
+                      height: "100%",
+                      display: "flex",
+                      flexDirection: "column",
+                      transition: "transform 0.3s",
+                      backgroundColor: "rgba(255, 255, 255, 0.1)", // Saydam arka plan rengi
+                      backdropFilter: "blur(10px)", // Bulanık arka plan efekti
+                      borderRadius: 2,
+                      boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
+                      "&:hover": { transform: "scale(1.05)", boxShadow: 6 },
+                    }}
+                  >
+                    {/* Üst Başlık ve Yeni Partner Rozeti */}
+                    <CardHeader
+                      title={
+                        <Typography
+                          variant="h6"
+                          fontWeight="bold"
+                          color="white"
+                        >
+                          {block?.PartnerName}
+                        </Typography>
+                      }
+                      action={
+                        <Chip
+                          label="New Partner"
+                          size="small"
+                          sx={{
+                            backgroundColor: "rgba(255, 255, 255, 0.2)",
+                            color: "white",
+                          }}
+                        />
+                      }
+                      sx={{
+                        backgroundColor: "rgba(255, 255, 255, 0.1)",
+                        display: "flex",
+                        alignItems: "center",
+                      }}
+                      // Avatar yerine img etiketi ekledik
+                      subheader={
+                        <img
+                          src={
+                            block?.PartnerIcon?.data?.attributes
+                              ? getStrapiMedia(
+                                  block.PartnerIcon.data.attributes.formats
+                                    ?.thumbnail || {}
+                                )
+                              : "/default/path/to/coinsites.webp"
+                          }
+                          alt={block.PartnerDescription || "Partner Icon"}
+                          style={{
+                            width: 200,
+                            height: 80,
+                            objectFit: "contain",
+                            marginRight: 16,
+                          }}
+                        />
+                      }
+                    />
+
+                    {/* İçerik */}
+                    <CardContent sx={{ flexGrow: 1 }}>
+                      {/* Etiketler */}
+                      <div style={{ marginBottom: "1rem" }}>
+                        {block.Tags?.map((tag: string, tagIndex: number) => (
+                          <Chip
+                            key={tagIndex}
+                            label={tag}
+                            size="small"
+                            sx={{
+                              marginRight: "0.5rem",
+                              marginBottom: "0.5rem",
+                              backgroundColor: "rgba(255, 255, 255, 0.2)",
+                              color: "white",
+                            }}
+                          />
+                        ))}
+                      </div>
+
+                      {/* Açıklama */}
+                      <Typography variant="body2" color="white">
+                        {block.PartnerDescription || "No description available"}
+                      </Typography>
+                    </CardContent>
+
+                    {/* Alt Kısım */}
+                    <CardActions
+                      sx={{ justifyContent: "center", paddingBottom: "1rem" }}
+                    >
+                      <Button
+  size="small"
+  variant="contained"
+  href={block?.websiteLink || "#"}
+  target="_blank"
+  sx={{
+    backgroundColor: "rgba(255, 255, 255, 0.1)", // Saydam arka plan
+    color: "white", // Beyaz yazı rengi
+    backdropFilter: "blur(4px)", // Bulanık arka plan efekti
+    "&:hover": {
+      backgroundColor: "rgba(255, 255, 255, 0.2)", // Hover durumunda biraz daha koyu
+    },
+  }}
+>
+  Website
+</Button>
+
+                    </CardActions>
+                  </Card>
                 </Link>
               ))
             ) : (
-              <p className="text-white">No partners available.</p>
+              <Typography variant="body1" color="text.primary">
+                No partners available.
+              </Typography>
             )}
           </div>
         </div>
 
         {/* Social Media Section */}
-        <div className={`text-center transition-opacity duration-1000 ease-in-out lg:mt-64 py-8 ${
-            isJoinVisible ? "opacity-100" : "opacity-0"
-          }`} ref={joinRef}>
+        <div
+          className={`text-center transition-opacity duration-1000 ease-in-out ${
+            isMobile ? "mt-16" : "lg:mt-64"
+          } py-8`}
+          ref={joinRef}
+        >
           <h2
             className={`${archivo_black.className} uppercase text-3xl lg:text-5xl mb-32`}
           >
             Join <span className="text-secondary">Us</span>
           </h2>
-          <div className="flex gap-24 items-center text-white">
+          <div
+            className={`flex ${
+              isMobile ? "flex-row gap-8" : "gap-24"
+            } items-center text-white`}
+          >
             {data?.data?.attributes?.Social?.length ? (
-              data.data.attributes.Social.map((social: any, index: number) => {
-                return (
-                  <div key={index} className="flex items-center">
-                    {/* Flex row ile yatay hizalama */}
-                    <Link
-                      target="_blank"
-                      href={social.url}
-                      className={`flex flex-col items-center hover:scale-110 ${
-                        social.name === "Instagram"
-                          ? "instagram-hover"
-                          : social.name === "Youtube"
-                          ? "youtube-hover"
-                          : social.name === "X"
-                          ? "x-hover"
-                          : social.name === "Telegram"
-                          ? "telegram-hover"
-                          : social.name === "Discord"
-                          ? "discord-hover"
-                          : ""
-                      }`}
-                    >
-                      <img
-                        className="transition-transform duration-300 object-contain"
-                        src={
-                          social?.Icon?.data
-                            ? getStrapiMedia(social?.Icon?.data?.attributes)
-                            : "/default/path/to/coinsites.webp"
-                        }
-                        alt={social.name}
-                        style={{ width: "60px", height: "60px" }}
-                      />
-                      <p className="mt-2 text-center text-lg text-white">
-                        {social.Followers}
-                      </p>
-                    </Link>
-                  </div>
-                );
-              })
+              data.data.attributes.Social.map((social: any, index: number) => (
+                <div key={index} className="flex items-center">
+                  <Link
+                    target="_blank"
+                    href={social.url}
+                    className={`flex flex-col items-center hover:scale-110 ${
+                      social.name === "Instagram"
+                        ? "instagram-hover"
+                        : social.name === "Youtube"
+                        ? "youtube-hover"
+                        : social.name === "X"
+                        ? "x-hover"
+                        : social.name === "Telegram"
+                        ? "telegram-hover"
+                        : social.name === "Discord"
+                        ? "discord-hover"
+                        : ""
+                    }`}
+                  >
+                    <img
+                      className="transition-transform duration-300 object-contain"
+                      src={
+                        social?.Icon?.data
+                          ? getStrapiMedia(social?.Icon?.data?.attributes)
+                          : "/default/path/to/coinsites.webp"
+                      }
+                      alt={social.name}
+                      style={{ width: "60px", height: "60px" }}
+                    />
+                    <p className="mt-2 text-center text-lg text-white">
+                      {social.Followers}
+                    </p>
+                  </Link>
+                </div>
+              ))
             ) : (
               <p className="text-white">No social links available.</p>
             )}
@@ -1042,7 +1160,13 @@ export default function Home() {
 
           <div className="relative w-full max-w-4xl lg:w-[70vw] mt-16">
             {/* Zaman Çizgisi */}
-            <div className="absolute left-1/2 transform -translate-x-1/2 h-full border-l-4 border-cyan-400"></div>
+            <div
+              className={`${
+                isMobile
+                  ? "h-full absolute left-0 transform -translate-x-1/2 border-l-4 border-cyan-400"
+                  : "absolute left-1/2 transform -translate-x-1/2 h-full border-l-4 border-cyan-400"
+              }`}
+            ></div>
 
             {/* Roadmap Kısmı */}
             {roadmap.length > 0 &&
@@ -1055,14 +1179,22 @@ export default function Home() {
                   <div
                     key={index}
                     ref={(el) => (yearRefs.current[yearKey] = el)}
-                    className={`relative mb-12 flex items-center ${
-                      index % 2 === 0 ? "flex-row-reverse" : ""
-                    } justify-between w-full`}
+                    className={`relative mb-12 flex ${
+                      isMobile
+                        ? "flex-col"
+                        : index % 2 === 0
+                        ? "flex-row-reverse"
+                        : ""
+                    } items-center justify-between w-full`}
                   >
                     {/* Kartın solunda veya sağında */}
                     <div
-                      className={`w-[45%] space-y-6 ${
-                        index % 2 === 0 ? "text-right pr-8" : "text-left pl-2"
+                      className={`${
+                        isMobile ? "w-full text-center" : "w-[45%]"
+                      } space-y-6 ${
+                        index % 2 === 0 && !isMobile
+                          ? "text-right pr-8"
+                          : "text-left pl-2"
                       }`}
                     >
                       {quarters.map((quarter, qIndex) => (
@@ -1079,7 +1211,13 @@ export default function Home() {
                     </div>
 
                     {/* Zaman çizgisi üzerindeki yuvarlak ve yearKey */}
-                    <div className="w-12 h-12 bg-cyan-400 rounded-full absolute left-1/2 transform -translate-x-1/2 flex items-center justify-center text-white font-bold">
+                    <div
+                      className={`w-12 h-12 bg-cyan-400 rounded-full absolute ${
+                        isMobile
+                          ? "top-0 left-0 translate-x-[-50%]"
+                          : "left-1/2 transform -translate-x-1/2"
+                      } flex items-center justify-center text-white font-bold`}
+                    >
                       {yearKey}
                     </div>
                   </div>

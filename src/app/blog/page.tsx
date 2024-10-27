@@ -7,19 +7,28 @@ import useBlog from "@/hooks/useBlog";
 import Grid from "@mui/material/Unstable_Grid2";
 import TimeAgo from "timeago-react";
 import Link from "next/link";
+import useMediaQuery from "@/hooks/useMediaQuery";
 
 export default function Blog() {
   const [posts] = useBlog("filter[published]=1");
-  return (
-    <main className="flex flex-col items-center bg-gradient-home justify-center">
+  const isMobile = useMediaQuery("(max-width: 768px)"); // Detect mobile screen size
+
+  return ( 
+    <main className="flex flex-col items-center bg-gradient-home justify-center w-full overflow-x-hidden"> {/* Added w-full and overflow-x-hidden */}
       <div
-        className={"flex items-center justify-center min-h-[50vh] pt-16 w-full"}
+        className={`flex items-center justify-center min-h-[50vh] pt-16 w-full ${
+          isMobile ? "px-4" : ""
+        }`} // Add padding for mobile screens
       >
-        <div className={"w-[80vw] lg:w-[40vw] m-auto text-left lg:text-center"}>
+        <div
+          className={`w-full max-w-[90vw] lg:max-w-[40vw] m-auto text-left lg:text-center ${
+            isMobile ? "text-center" : ""
+          }`} // Ensures the content does not exceed screen width
+        >
           <h2
-            className={`${archivo_black.className} uppercase text-2xl lg:text-5xl mb-5 text-secondary`}
+            className={`${archivo_black.className} uppercase text-2xl lg:text-5xl mb-5 text-white`}
           >
-            Blog <span className={"text-accent"}>Posts</span>
+            Blog <span className={"text-secondary"}>Posts</span>
           </h2>
           <p>
             Be up to date with what we are about and the current waves of web3
@@ -27,15 +36,19 @@ export default function Blog() {
           </p>
         </div>
       </div>
-      <div className={"w-[80vw] pb-32"}>
-        <div className={"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"}>
+      <div className={`w-full max-w-[90vw] pb-32 ${isMobile ? "px-2" : ""}`}>
+        <div
+          className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 ${
+            isMobile ? "gap-3" : ""
+          }`} // Reduce gap size for mobile screens
+        >
           {posts.map((post: any, index: number) => (
             <Link key={index} href={`/blog/${post.slug}`}>
               <Grid xs={12} lg={4}>
-                <div className="bg-black min-h-[400px] bg-opacity-30 backdrop-blur-md post-card p-2 text-white rounded-xl transition-transform duration-300 transform hover:scale-105 hover:shadow-lg">
+                <div className="bg-black min-h-[450px] bg-opacity-30 backdrop-blur-md post-card p-2 text-white rounded-xl transition-transform duration-300 transform hover:scale-105 hover:shadow-lg">
                   <div
                     className={
-                      "relative h-[200px] w-full overflow-clip rounded-xl"
+                      "relative h-[200px] w-full overflow-hidden rounded-xl"
                     }
                   >
                     <img
