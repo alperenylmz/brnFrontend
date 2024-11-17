@@ -304,13 +304,12 @@ interface ApiResponse {
 }
 
 export default function Token() {
-  const [currentNFT, setCurrentNFT] = useState(0);
+  //const [currentNFT, setCurrentNFT] = useState(0);
   const [tokenAllocations] = useTokenAllocations();
-  const [{ token: tokenInformation }] = useConfig("token");
-  const [markets] = useMarkets();
-  const [token] = useTokenPrice();
-  const [data, setData] = useState<TokenPageData>();
-  const [textCopied, setTextCopied] = useState(false);
+  //const [{ token: tokenInformation }] = useConfig("token");
+  //const [markets] = useMarkets();
+  //const [token] = useTokenPrice();
+  //const [textCopied, setTextCopied] = useState(false);
   const [coinData, setCoinData] = useState<CoinResponse>();
   const [actualData, setActualData] = useState<ApiResponse>();
   const [openIndex, setOpenIndex] = useState<number | null>(null);
@@ -318,23 +317,10 @@ export default function Token() {
   const [isChartVisible, setIsChartVisible] = useState(false);
   const [showTokenInfo, setShowTokenInfo] = useState(false);
   const isMobile = useMediaQuery("(max-width: 768px)"); // Detect mobile screen size
+  const [isClient, setIsClient] = useState(false);
 
-  let API_HOST = "http://localhost:1337/";
 
-  useEffect(() => {
-    const fetchHomeData = async () => {
-      try {
-        const response = await fetchAPI<TokenPageData>(
-          "/api/token?populate[LineGraph]=*&populate[CoinCode]=*&populate[ChartSection][populate][CoinLinks][populate]=*&populate[ChartSection][populate][ChartImage]=*&populate[ChartSection][populate][TokenChartBlock]=*&populate[ChartSection][populate][ColorPercentages]=*"
-        );
-        setData(response);
-        console.log(response);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchHomeData();
-  }, []);
+  let API_HOST = "https://strapiornek3.onrender.com/";
 
   useEffect(() => {
     const fetchHomeData = async () => {
@@ -355,7 +341,7 @@ export default function Token() {
     const fetchCoinData = async () => {
       try {
         const response = await fetch(
-          "http://localhost:1337/api/coin/brn-price",
+          "https://strapiornek3.onrender.com/api/coin/brn-price",
           {
             method: "GET",
           }
@@ -398,8 +384,13 @@ export default function Token() {
       }
     };
   }, []);
+  
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   return (
+    <>
     <main className="bg-gradient-home -z-50">
       <div
         className={`flex items-center fixed ${
@@ -582,9 +573,9 @@ export default function Token() {
               >
                 <img
                   src={
-                    coin?.Image?.data?.attributes?.formats?.thumbnail?.url
+                    coin?.Image?.data?.attributes?.url
                       ? getStrapiMedia(
-                          coin.Image?.data?.attributes?.formats?.thumbnail
+                          coin.Image?.data?.attributes
                         )
                       : "/default/path/to/coinsites.webp"
                   }
@@ -627,7 +618,7 @@ export default function Token() {
                 <div className="flex justify-center mb-4">
                   <img
                     src={
-                      block?.StrategicIcon?.data
+                      block?.StrategicIcon?.data?.attributes?.url
                         ? getStrapiMedia(block?.StrategicIcon?.data?.attributes)
                         : "/default/path/to/coinsites.webp"
                     }
@@ -745,5 +736,6 @@ export default function Token() {
           </div> */}
       </div>
     </main>
+    </>
   );
 }

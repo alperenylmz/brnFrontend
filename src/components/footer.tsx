@@ -226,7 +226,7 @@ const Footer = () => {
     const fetchCoinData = async () => {
       try {
         const response = await fetch(
-          "http://localhost:1337/api/coin/brn-price",
+          "https://strapiornek3.onrender.com/api/coin/brn-price",
           {
             method: "GET",
           }
@@ -316,7 +316,7 @@ const Footer = () => {
               We only send valuable emails, you are safe from spam emails.
             </h4>
             <p>Go ahead and explore them to find some really cool NFTs.</p>
-            <div className={"mt-8"}>
+            <div className={`${isMobile ? "" : "mt-8"}`}>
               <form onSubmit={subscribe}>
                 <div
                   className={
@@ -367,12 +367,12 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="relative flex items-center justify-center min-h-[320px] mt-4">
+        <div className={`${isMobile ? "" : " mt-4"} relative flex items-center justify-center min-h-[320px]`}>
           {/* İçerik */}
           <div className="relative z-10 flex flex-col md:flex-row items-center justify-between w-[90vw] lg:w-[80vw]">
-            <div className="flex flex-row gap-8 items-start mt-8">
+            <div className={`${isMobile ? "" : "mt-8"} flex flex-row gap-8 items-start `}>
               {/* Sol Kolon - Linkler */}
-              <div className="flex flex-col space-y-4 text-white">
+              <div className={`${isMobile ? "space-y-2" : "space-y-4"} flex flex-col  text-white`}>
                 <a
                   href="https://www.brnmetaverse.net/token"
                   className="hover:text-gray-400"
@@ -421,7 +421,7 @@ const Footer = () => {
               <div className="border-[1px] border-gray-700 self-stretch"></div>
 
               {/* Sağ Kolon - Platform Listesi */}
-              <div className="flex flex-col gap-5 items-start text-white">
+              <div className={`${isMobile ? "" : "gap-5"} flex flex-col items-start text-white`}>
                 <h1 className={`${archivo_black} font-bold text-lg`}>
                   Available Platforms:
                 </h1>
@@ -442,15 +442,13 @@ const Footer = () => {
                         >
                           <img
                             src={
-                              platform.PlaceImage.data.attributes.formats
-                                .thumbnail.url
+                              platform?.PlaceImage?.data?.attributes?.url
                                 ? getStrapiMedia(
-                                    platform.PlaceImage.data.attributes.formats
-                                      .thumbnail
+                                    platform.PlaceImage.data.attributes
                                   )
                                 : "/path/to/default_image.png"
                             }
-                            alt={platform.PlaceImage.data.attributes.name}
+                            alt={platform?.PlaceImage?.data?.attributes?.name || "alternativeText"}
                             style={{
                               width: "30px",
                               height: "30px",

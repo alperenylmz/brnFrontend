@@ -89,8 +89,9 @@ export default function useBlog(
       setLoading(true);
       try {
         const request = await fetch(
-          `http://localhost:1337/api/blog-posts?fields[0]=Title&fields[1]=slug&fields[2]=createdAt&fields[3]=miniDescription&populate[coverImage][fields][0]=url&populate[coverImage][fields][1]=formats`
+          `https://strapiornek3.onrender.com/api/blog-posts?${filter}&fields[0]=Title&fields[1]=slug&fields[2]=createdAt&fields[3]=miniDescription&populate[coverImage][fields][0]=url&populate[coverImage][fields][1]=formats`
         );
+        
         const responseJson = await request.json();
         console.log(responseJson);
 
@@ -112,7 +113,7 @@ export default function useBlog(
               id: item.id,
               title: attributes.Title,
               description: attributes.miniDescription,
-              imageUrl: imageUrl ? `http://localhost:1337${imageUrl}` : null,
+              imageUrl: imageUrl ? `https://strapiornek3.onrender.com${imageUrl}` : null,
               createdAt: attributes.createdAt,
               updatedAt: attributes.updatedAt,
               slug: attributes.slug,

@@ -8,15 +8,17 @@ export default function Seo({
   metaTitle = "BRN",
   metaDescription = "The cutting-edge cryptocurrency backed by the gaming industry, offering a seamless blend of value and versatility.",
   siteName = "BRN Metaverse",
+  keywords = "BRN1, BRN2, BRN3",
   canonical = DOMAIN,
   ogImage = DEFAULT_OG_IMAGE,
   ogType = "website",
   twitterHandle = "@d__raptis",
 }) {
   return (
-    <Head>
+    <head>
       <title key="title">{`${metaTitle} – ${siteName}`}</title>
       <meta name="description" content={metaDescription} />
+      <meta name="keywords" content={keywords} />
       <meta key="og_type" property="og:type" content={ogType} />
       <meta key="og_title" property="og:title" content={metaTitle} />
       <meta key="og_description" property="og:description" content={metaDescription} />
@@ -68,6 +70,6 @@ export default function Seo({
       <link rel="canonical" href={canonical ?? DOMAIN} />
 
       <link rel="shortcut icon" href="/favicon.ico" />
-    </Head>
+    </head>
   );
 }

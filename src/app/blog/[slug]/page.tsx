@@ -134,7 +134,7 @@ interface PageProps {
 
 const Page = (props: PageProps) => {
   const [blog, setBlog] = useState<BlogPostData | null>(null);
-  const API_HOST = "http://localhost:1337";
+  const API_HOST = "https://strapiornek3.onrender.com";
 
   useEffect(() => {
     if (props.params.slug) {
@@ -170,6 +170,7 @@ const Page = (props: PageProps) => {
           metaDescription={blog.attributes.Seo.metaDescription}
           ogImage={`${API_HOST}${blog.attributes.Seo.SharedImage?.media?.data?.attributes.url}`}
           siteName="BRN Metaverse"
+          keywords={blog.attributes.Seo.keywords}
         />
       )}
       <main className="flex flex-col items-start justify-center min-h-[60vh] m-auto w-[80vw] py-32">

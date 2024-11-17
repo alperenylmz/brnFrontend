@@ -4,11 +4,11 @@ import Link from "next/link";
 import { poppins } from "@/config/fonts";
 import { FiMenu, FiX } from "react-icons/fi";
 import { useEffect, useRef, useState } from "react";
-//import useMarkets from "@/hooks/useMarkets";
 import { BiMapPin } from "react-icons/bi";
 import { GiNinjaHeroicStance } from "react-icons/gi";
 import useMarkets from "@/hooks/useMarkets";
 import useMediaQuery from "@/hooks/useMediaQuery";
+import { useRouter } from "next/navigation";
 
 const Navigation = () => {
   const [showNavigation, setShowNavigation] = useState(false);
@@ -22,6 +22,7 @@ const Navigation = () => {
   const showGameDropdownRef = useRef(showGameDropdown);
   const [markets] = useMarkets();
   const isMobile = useMediaQuery("(max-width: 768px)"); // Detect mobile screen size
+  const router = useRouter();
 
   let API_HOST = "https://test.brntoken.net";
 
@@ -36,7 +37,7 @@ const Navigation = () => {
 
   return (
     <div
-      className={`${
+      className={`$${
         modalIslOpen || gameModalIslOpen
           ? "z-100 bg-transparent"
           : "bg-primary-dark"
@@ -89,7 +90,7 @@ const Navigation = () => {
             </button>
           </div>
           <div
-            className={`${
+            className={`$${
               isMobile ? "text-3xl" : ""
             } flex flex-col z-50 md:flex-row items-center justify-center gap-5 h-full`}
           >
@@ -117,8 +118,7 @@ const Navigation = () => {
                     >
                       <button
                         onClick={() => {
-                          toggleNavigation();
-                          setGameModalIsOpen(true);
+                          router.push("/game");
                         }}
                         className={`hover:text-accent ${
                           activeLink.startsWith("/game")
@@ -175,7 +175,6 @@ const Navigation = () => {
                   </div>
                 ),
               },
-              // {url: 'https://brnmarkets.io', text: 'NFT Marketplace', newTab: true},
               {
                 url: "https://stake.brntoken.net",
                 text: "Stake",
@@ -194,7 +193,7 @@ const Navigation = () => {
                   href={link.url}
                   target={link.newTab ? "_blank" : "_self"}
                   key={index}
-                  className={`${
+                  className={`$${
                     activeLink == link.url ? "text-accent" : ""
                   } hover:text-accent ${poppins.bold.className}`}
                 >
@@ -280,23 +279,7 @@ const Navigation = () => {
         </div>
       </div>
 
-      {/*  BOTTOM MODAL PANEL
-                <div className={`lg:hidden fixed left-0 px-8 py-5 transition-all ${modalIslOpen ? 'bottom-0 opacity-100 visible' : 'bottom-[-100vh] invisible opacity-0'} items-center justify-center w-[100vw] bg-primary z-10`}>
-                    {markets?.map((listing: any, index: number) => (
-                        <a href={listing.token_url} target={'_blank'} key={index} className={'hover:bg-cDark'}>
-                            <div className={'flex gap-3 items-center p-3 text-sm'}>
-                                <img src={`${API_HOST}${listing.image_path}`} height={30} width={30} className={'rounded-full'} alt={listing.name}/>
-                                {listing.name}
-                            </div>
-                        </a>
-                    ))}
-                    <button onClick={()=> setModalIsOpen(false)} className={'bg-primary-light p-5 w-full rounded-full mt-5'}>
-                        Close
-                    </button>
-                </div>
-                 BOTTOM MODAL PANEL  */}
-
-      {/*  BOTTOM GAME MODAL PANEL  */}
+      {/*  BOTTOM MODAL PANEL */}
       <div
         style={{ position: "fixed" }}
         className={`lg:hidden fixed left-0 px-8 py-5 transition-all ${

@@ -3,15 +3,13 @@ import "./globals.css";
 import { poppins } from "@/config/fonts";
 import Footer from "@/components/footer";
 import Navigation from "@/components/navigation";
+import GameHeader from "@/components/gameheader";
 import { ellipses, walletEllipses } from "@/helpers/strings";
 import Link from "next/link";
 import { BsTelegram } from "react-icons/bs";
 import useMediaQuery from "@/hooks/useMediaQuery"; // Import the hook
-import Head from "next/head";
-
-{
-  /*export const metadata = { title: "BRN Token", description: "BRN connects the metaverse with infrastructures powered by our token. Connecting these bridges happens through the game we develop.", }; */
-}
+import { usePathname } from "next/navigation";
+import { useState } from "react";
 
 // Register String Extensions
 String.prototype.ellipses = ellipses;
@@ -19,9 +17,23 @@ String.prototype.walletEllipses = walletEllipses;
 
 function RootLayout({ children }: { children: React.ReactNode }) {
   const isMobile = useMediaQuery("(max-width: 768px)"); // Detect mobile screen size
+  const pathname = usePathname();
+  const [isClient, setIsClient] = useState(false);
+
+  // Determine whether to use GameHeader or default Navigation
+  const isGamePage = pathname.startsWith("/game");
 
   return (
     <html lang="en">
+      <head>
+        <title>BRN Metaverse</title>
+        <meta
+          name="description"
+          content="BRN connects the metaverse with infrastructures powered by our token. Connecting these bridges happens through the game we develop."
+        />
+        <link rel="canonical" href="https://www.brnmetaverse.net" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+      </head>
       <body
         className={`${
           poppins.regular.className
@@ -31,11 +43,11 @@ function RootLayout({ children }: { children: React.ReactNode }) {
       >
         {/* Navigation Bar */}
         <div
-          className={`absolute top-0 w-full ${
-            isMobile ? "left-0" : "md:left-0 md:w-full"
-          } flex items-center justify-center z-[9999]`}
+          className={
+            "fixed top-0 md:absolute left-[50%] translate-x-[-50%] flex items-center justify-center z-[9999]"
+          }
         >
-          <Navigation />
+          {isGamePage ? <GameHeader /> : <Navigation />}
         </div>
 
         {/* Main Content */}

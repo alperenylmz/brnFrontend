@@ -11,7 +11,7 @@ export default function useScreenSize() {
     const [isLoading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<any>(null);
 
-    let API_HOST = 'http://localhost:1337/';
+    let API_HOST = 'https://strapiornek3.onrender.com/';
 
     const getSize = useCallback(() => {
         return {width: window.screen.width, height: window.screen.height};

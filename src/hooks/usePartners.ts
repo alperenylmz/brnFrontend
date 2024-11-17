@@ -6,7 +6,7 @@ export default function usePartners() {
     const [isLoading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<any>(null);
 
-    let API_HOST = 'http://localhost:1337/';
+    let API_HOST = 'https://strapiornek3.onrender.com/';
 
 
 

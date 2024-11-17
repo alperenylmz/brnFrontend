@@ -109,7 +109,8 @@ export default function Brain() {
         </div>
 
         {/* iPhone Çerçevesi ve Video */}
-        <div
+        {!isMobile && (
+          <div
           className={`absolute ${
             isMobile
               ? "right-1/2 transform translate-x-1/2 top-[30%]"
@@ -124,7 +125,7 @@ export default function Brain() {
           <div
             className={`absolute ${
               isMobile
-                ? "right-8 top-1 w-[150px] h-[285px]"
+                ? "right-8 top-1 w-[130px] h-[285px]"
                 : "right-32 top-4 w-[305px] h-[565px]"
             } rounded-3xl overflow-hidden`}
           >
@@ -137,6 +138,8 @@ export default function Brain() {
             />
           </div>
         </div>
+        )}
+        
       </div>
 
       {/* Second Image Section */}
@@ -145,7 +148,8 @@ export default function Brain() {
           isMobile ? "h-[70vh]" : "h-[100vh]"
         } bg-[url('/assets/images/BrainBg2.png')] bg-cover bg-center flex justify-end items-center`}
       >
-        <div
+        {!isMobile && (
+          <div
           className={`absolute ${
             isMobile ? "left-1/2 transform -translate-x-1/2" : "left-[0%]"
           }`}
@@ -168,10 +172,12 @@ export default function Brain() {
             />
           </div>
         </div>
+        )}
+        
         <div
           className={`items-center justify-center ${
             isMobile ? "w-[300px] h-[150px]" : "w-[650px] h-[300px]"
-          } ${isMobile ? "mr-4" : "mr-[10%]"}`}
+          } ${isMobile ? "mr-12" : "mr-[10%]"}`}
         >
           <h1
             className={`${poppins.regular.className} text-secondary ${
