@@ -30,6 +30,10 @@ interface ImageAttributes {
   name: string;
   url: string;
   formats?: ImageFormats;
+  alternativeText?: string;
+  caption?: string;
+  width?: number;
+  height?: number;
 }
 
 interface ImageData {
@@ -38,7 +42,7 @@ interface ImageData {
 }
 
 interface ModeImage {
-  data: ImageData[];
+  data: ImageData[] | null;
 }
 
 interface ArenaMode {
@@ -59,7 +63,11 @@ interface ArenaAttributes {
 
 interface ApiResponse {
   data: {
+    id: number;
     attributes: {
+      createdAt: string;
+      updatedAt: string;
+      publishedAt: string;
       EventArena: ArenaAttributes;
       BossArena: ArenaAttributes;
       BrnArena: ArenaAttributes;
@@ -77,7 +85,7 @@ export default function DefaultTabs() {
     const fetchArenasData = async () => {
       try {
         const response = await fetch(
-          "http://localhost:1337/api/map?populate[EventArena][populate][ArenaMode][populate][ModeImages]=*&populate[BossArena][populate][ArenaMode][populate][ModeImages]=*&populate[BrnArena][populate][ArenaImages]=*",
+          "http://localhost:1337/api/map?populate[EventArena][populate][ArenaMode][populate][ModeImages]=*&populate[BossArena][populate][ArenaMode][populate][ModeImages]=*&populate[BrnArena][populate][ArenaMode][populate][ModeImages]=*",
           {
             headers: {
               "Content-Type": "application/json",
@@ -90,7 +98,7 @@ export default function DefaultTabs() {
         }
 
         const data = await response.json();
-        console.log("Fetched Data:", data); // API'den dönen veriyi kontrol edin
+        console.log("Fetched Data:", data);
         setArenasData(data);
       } catch (error) {
         console.error("Error fetching arenas data:", error);
@@ -123,7 +131,7 @@ export default function DefaultTabs() {
     };
 
     const data = getData(arena);
-    console.log("Arena Data:", data); // Arena verisini kontrol edin
+    console.log("Arena Data:", data);
     setArenaData(data);
   }, [arenasData, arena]);
 
@@ -131,13 +139,9 @@ export default function DefaultTabs() {
 
   return (
     <main className="flex flex-col items-center bg-gradient-home justify-center">
-      <div
-        className={"flex items-center justify-center min-h-[50vh] py-16 w-full"}
-      >
+      <div className={"flex items-center justify-center min-h-[50vh] py-16 w-full"}>
         <div className={"w-[80vw] lg:w-[40vw] m-auto text-left lg:text-center"}>
-          <h2
-            className={`${archivo_black.className} uppercase text-2xl lg:text-5xl mb-5`}
-          >
+          <h2 className={`${archivo_black.className} uppercase text-2xl lg:text-5xl mb-5`}>
             MAPS
           </h2>
           <p>
@@ -147,17 +151,14 @@ export default function DefaultTabs() {
         </div>
       </div>
       <div className={"w-[90vw] text-white"}>
-        <div
-          className={"grid grid-cols-3 items-center justify-start w-full pb-8"}
-        >
+        <div className={"grid grid-cols-3 items-center justify-start w-full pb-8"}>
           <button
             onClick={() => {
               setValue(0);
               setArena(EVENT);
             }}
-            className={`${
-              archivo_black.className
-            } text-md md:text-md border-2 border-r-2 rounded-l-xl border-accent p-3 px-8 ${
+            className={`
+              ${archivo_black.className} text-md md:text-md border-2 border-r-2 rounded-l-xl border-accent p-3 px-8 ${
               arena === EVENT ? "bg-accent text-white" : "text-white"
             }`}
           >
@@ -168,9 +169,8 @@ export default function DefaultTabs() {
               setValue(0);
               setArena(BOSS);
             }}
-            className={`${
-              archivo_black.className
-            } text-md md:text-md border-t-2 border-r-2 border-b-2 border-accent p-3 px-8 ${
+            className={`
+              ${archivo_black.className} text-md md:text-md border-t-2 border-r-2 border-b-2 border-accent p-3 px-8 ${
               arena === BOSS ? "bg-accent text-white" : "text-white"
             }`}
           >
@@ -181,9 +181,8 @@ export default function DefaultTabs() {
               setValue(0);
               setArena(BRN);
             }}
-            className={`${
-              archivo_black.className
-            } text-md md:text-md border-t-2 border-r-2 border-b-2 rounded-r-xl border-accent p-3 px-8 ${
+            className={`
+              ${archivo_black.className} text-md md:text-md border-t-2 border-r-2 border-b-2 rounded-r-xl border-accent p-3 px-8 ${
               arena === BRN ? "bg-accent text-white" : "text-white"
             }`}
           >
@@ -191,15 +190,10 @@ export default function DefaultTabs() {
           </button>
         </div>
         {arenaData ? (
-          is(BRN) && arenaData.ArenaImages ? (
+          arena === BRN && arenaData.ArenaMode && arenaData.ArenaMode.length > 0 ? (
             <div className={"grid grid-cols-1 gap-8 py-8 min-h-[200px]"}>
-              <span>{arenaData.Description}</span>
-              <div
-                className={
-                  "grid grid-cols-1 md:grid-cols-3 gap-5 w-full h-full"
-                }
-              >
-                {arenaData.ArenaImages.data.map((image, index) => (
+              <div className={"grid grid-cols-1 md:grid-cols-3 gap-5 w-full h-full"}>
+                {arenaData.ArenaMode.map((arenaMode, index) => (
                   <div
                     key={index}
                     className="group relative flex items-center justify-center h-[250px] lg:min-h-[400px] w-full rounded-xl md:rounded-2xl overflow-hidden"
@@ -207,9 +201,149 @@ export default function DefaultTabs() {
                     <div
                       className="shadow-xl border border-transparent rounded-lg overflow-hidden transition-transform duration-300"
                       style={{
-                        width: "95%", // Görselin %95 genişliğinde olması için
-                        height: "95%", // Görselin %95 yüksekliğinde olması için
-                        boxShadow: "0 0 10px 5px rgba(58, 123, 253, 0.6)", // Light glow effect
+                        width: "95%",
+                        height: "95%",
+                        boxShadow: "0 0 10px 5px rgba(58, 123, 253, 0.6)",
+                      }}
+                    >
+                      <img
+                        src={`http://localhost:1337${
+                          arenaMode.ModeImages.data?.[0]?.attributes.formats?.small?.url ||
+                          arenaMode.ModeImages.data?.[0]?.attributes.url
+                        }`}
+                        className="w-full h-full object-cover rounded-lg"
+                        alt={arenaMode.Title || "Arena Image"}
+                      />
+                    </div>
+                    <div
+                      className={
+                        "absolute transition-all bottom-[-200px] group-hover:bottom-0 p-5 bg-gradient-to-r from-accent via-secondary to-pink-500 w-full rounded-b-lg"
+                      }
+                    >
+                      <h3 className={`${archivo_black.className} text-white`}>
+                        {arenaMode.Title}
+                      </h3>
+                      <p className="text-white mt-2">
+                        {arenaMode.ModeDescription}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : arenaData.ArenaMode && arenaData.ArenaMode.length > 0 ? (
+            <Tabs.Group
+              aria-label="Default tabs"
+              style="underline"
+              className={"border-none"}
+              onActiveTabChange={(tab) => {
+                setValue(tab);
+              }}
+            >
+              {arenaData.ArenaMode.map((arenaMode, index) => (
+                <Tabs.Item
+                  active={index === value}
+                  title={
+                    <span className="text-secondary">
+                      {arenaMode.Title.toUpperCase()}
+                    </span>
+                  }
+                  key={index}
+                  className={"border-none"}
+                >
+                  <div
+                    className={
+                      "grid grid-cols-1 md:grid-cols-2 gap-8 py-8 min-h-[200px]"
+                    }
+                  >
+                    <div className={"group relative w-full"}>
+                      <div className="absolute top-1/2 left-0 transform -translate-y-1/2 z-50 opacity-0 group-hover:opacity-100 transition duration-300">
+                        <button
+                          type="button"
+                          className={`prev_${arenaMode.Title.toLowerCase().replace(
+                            /\s+/g,
+                            "_"
+                          )} bg-white p-2 md:p-3 rounded-full text-primary ml-3`}
+                        >
+                          <FiArrowLeft size={32} />
+                        </button>
+                      </div>
+                      <div className="absolute top-1/2 right-0 transform -translate-y-1/2 z-50 opacity-0 group-hover:opacity-100 transition duration-300">
+                        <button
+                          type="button"
+                          className={`next_${arenaMode.Title.toLowerCase().replace(
+                            /\s+/g,
+                            "_"
+                          )} bg-white p-2 md:p-3 rounded-full text-primary mr-3`}
+                        >
+                          <FiArrowRight size={32} />
+                        </button>
+                      </div>
+                      <Swiper
+                        loop={true}
+                        slidesPerView={1}
+                        modules={[Navigation]}
+                        spaceBetween={20}
+                        navigation={{
+                          nextEl: `.next_${arenaMode.Title.toLowerCase().replace(
+                            /\s+/g,
+                            "_"
+                          )}`,
+                          prevEl: `.prev_${arenaMode.Title.toLowerCase().replace(
+                            /\s+/g,
+                            "_"
+                          )}`,
+                        }}
+                      >
+                        {arenaMode.ModeImages.data?.map((image, imgIndex) => (
+                          <SwiperSlide key={imgIndex}>
+                            <div className="relative flex items-center justify-center h-[200px] lg:min-h-[400px] w-full rounded-xl md:rounded-2xl overflow-hidden">
+                              <div
+                                className="shadow-xl border border-transparent rounded-lg overflow-hidden transition-transform duration-300"
+                                style={{
+                                  width: "95%",
+                                  height: "95%",
+                                  boxShadow:
+                                    "0 0 10px 5px rgba(58, 123, 253, 0.6)",
+                                }}
+                              >
+                                <img
+                                  src={
+                                    image?.attributes?.formats?.large?.url
+                                      ? getStrapiMedia(
+                                          image.attributes.formats.large
+                                        )
+                                      : "/path/to/default_image.png"
+                                  }
+                                  className="w-full h-full object-cover"
+                                  alt={image.attributes.name || "Arena Image"}
+                                />
+                              </div>
+                            </div>
+                          </SwiperSlide>
+                        ))}
+                      </Swiper>
+                    </div>
+                    <span>{arenaMode.ModeDescription}</span>
+                  </div>
+                </Tabs.Item>
+              ))}
+            </Tabs.Group>
+          ) : (
+            <div className={"grid grid-cols-1 gap-8 py-8 min-h-[200px]"}>
+              <span>{arenaData.Description}</span>
+              <div className={"grid grid-cols-1 md:grid-cols-3 gap-5 w-full h-full"}>
+                {arenaData.ArenaImages?.data.map((image, index) => (
+                  <div
+                    key={index}
+                    className="group relative flex items-center justify-center h-[250px] lg:min-h-[400px] w-full rounded-xl md:rounded-2xl overflow-hidden"
+                  >
+                    <div
+                      className="shadow-xl border border-transparent rounded-lg overflow-hidden transition-transform duration-300"
+                      style={{
+                        width: "95%",
+                        height: "95%",
+                        boxShadow: "0 0 10px 5px rgba(58, 123, 253, 0.6)",
                       }}
                     >
                       <img
@@ -223,118 +357,14 @@ export default function DefaultTabs() {
                     </div>
                     <div
                       className={
-                        "absolute transition-all bottom-[-200px] group-hover:bottom-0 p-5 bg-gradient-to-r from-accent via-secondary to-pink-500 w-full rounded-b-lg"
+                        "absolute transition-all bottom-[-200px] group-hover:bottom-0 bg-gradient-to-r from-accent via-secondary to-pink-500 w-full rounded-b-lg"
                       }
                     >
-                      <h3 className={`${archivo_black.className} text-white`}>
-                        {index + 1}vs{index + 1}
-                      </h3>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
-          ) : (
-            arenaData.ArenaMode && (
-              <Tabs.Group
-                aria-label="Default tabs"
-                style="underline"
-                className={"border-none"}
-                onActiveTabChange={(tab) => {
-                  setValue(tab);
-                }}
-              >
-                {arenaData.ArenaMode.map((arenaMode, index) => (
-                  <Tabs.Item
-                    active={index === value}
-                    title={
-                      <span className="text-secondary">
-                        {arenaMode.Title.toUpperCase()}
-                      </span>
-                    }
-                    key={index}
-                    className={"border-none"}
-                  >
-                    <div
-                      className={
-                        "grid grid-cols-1 md:grid-cols-2 gap-8 py-8 min-h-[200px]"
-                      }
-                    >
-                      <div className={"group relative w-full"}>
-                        {/* Swiper için navigasyon butonları */}
-                        <div className="absolute top-1/2 left-0 transform -translate-y-1/2 z-50 opacity-0 group-hover:opacity-100 transition duration-300">
-                          <button
-                            type="button"
-                            className={`prev_${arenaMode.Title.toLowerCase().replace(
-                              /\s+/g,
-                              "_"
-                            )} bg-white p-2 md:p-3 rounded-full text-primary ml-3`}
-                          >
-                            <FiArrowLeft size={32} />
-                          </button>
-                        </div>
-                        <div className="absolute top-1/2 right-0 transform -translate-y-1/2 z-50 opacity-0 group-hover:opacity-100 transition duration-300">
-                          <button
-                            type="button"
-                            className={`next_${arenaMode.Title.toLowerCase().replace(
-                              /\s+/g,
-                              "_"
-                            )} bg-white p-2 md:p-3 rounded-full text-primary mr-3`}
-                          >
-                            <FiArrowRight size={32} />
-                          </button>
-                        </div>
-                        <Swiper
-                          loop={true}
-                          slidesPerView={1}
-                          modules={[Navigation]}
-                          spaceBetween={20}
-                          navigation={{
-                            nextEl: `.next_${arenaMode.Title.toLowerCase().replace(
-                              /\s+/g,
-                              "_"
-                            )}`,
-                            prevEl: `.prev_${arenaMode.Title.toLowerCase().replace(
-                              /\s+/g,
-                              "_"
-                            )}`,
-                          }}
-                        >
-                          {arenaMode.ModeImages.data.map((image, imgIndex) => (
-                            <SwiperSlide key={imgIndex}>
-                              <div className="relative flex items-center justify-center h-[200px] lg:min-h-[400px] w-full rounded-xl md:rounded-2xl overflow-hidden">
-                                <div
-                                  className="shadow-xl border border-transparent rounded-lg overflow-hidden transition-transform duration-300"
-                                  style={{
-                                    width: "95%", // Görselin %95 genişliğinde olması için
-                                    height: "95%", // Görselin %95 yüksekliğinde olması için
-                                    boxShadow:
-                                      "0 0 10px 5px rgba(58, 123, 253, 0.6)", // Light glow effect
-                                  }}
-                                >
-                                  <img
-                                    src={
-                                      image?.attributes?.formats?.large?.url
-                                        ? getStrapiMedia(
-                                            image.attributes.formats.large
-                                          )
-                                        : "/path/to/default_image.png"
-                                    }
-                                    className="w-full h-full object-cover"
-                                    alt={image.attributes.name || "Arena Image"}
-                                  />
-                                </div>
-                              </div>
-                            </SwiperSlide>
-                          ))}
-                        </Swiper>
-                      </div>
-                      <span>{arenaMode.ModeDescription}</span>
-                    </div>
-                  </Tabs.Item>
-                ))}
-              </Tabs.Group>
-            )
           )
         ) : (
           <p>Loading arenas...</p>
@@ -343,3 +373,4 @@ export default function DefaultTabs() {
     </main>
   );
 }
+
