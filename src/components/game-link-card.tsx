@@ -1,54 +1,59 @@
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect, useRef } from "react";
+import { useRef, useState } from "react";
 import { archivo_black } from "@/config/fonts";
 
 interface LinkCardProps {
   title: string;
   imageUrl: string;
   link: string;
+  description: string;
 }
 
-const LinkCard: React.FC<LinkCardProps> = ({ title, imageUrl, link }) => {
-  const cardRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const card = cardRef.current;
-    if (card) {
-      let animationFrameId: number;
-      let direction = 1;
-      let position = 0;
-
-      const animate = () => {
-        position += 0.5 * direction;
-        if (position > 10 || position < -10) {
-          direction *= -1;
-        }
-        card.style.transform = `translateY(${position}px)`;
-        animationFrameId = requestAnimationFrame(animate);
-      };
-
-      animationFrameId = requestAnimationFrame(animate);
-      return () => cancelAnimationFrame(animationFrameId);
-    }
-  }, []);
+const LinkCard: React.FC<LinkCardProps> = ({
+  title,
+  imageUrl,
+  link,
+  description,
+}) => {
+  const imageRef = useRef<HTMLImageElement>(null);
+  const [objectFitClass, setObjectFitClass] = useState("object-cover");
 
   return (
     <Link href={link} legacyBehavior>
-      <a>
-        <div ref={cardRef} className="relative w-full h-80 rounded-lg overflow-hidden shadow-lg">
+      <a className="flex flex-col items-center space-y-4">
+        {/* Title Outside and Above Card */}
+        <div className="text-center py-2">
+          <h3
+            className={`${archivo_black.className} text-white text-2xl font-bold`}
+          >
+            {title}
+          </h3>
+        </div>
+        {/* Card Structure */}
+        <div className="relative bg-glass border-2 border-gray-400 w-full h-80 rounded-lg overflow-hidden shadow-2xl">
+          {/* Image */}
           <Image
             src={imageUrl}
             alt={title}
             fill={true}
-            className="opacity-70 rounded-lg object-contain hover:opacity-100 transition-opacity duration-300"
+            className={`rounded-lg ${objectFitClass}`}
+            onLoadingComplete={() => {
+              const imgElement = imageRef.current;
+              if (imgElement) {
+                const { naturalWidth, naturalHeight } = imgElement;
+                if (naturalWidth > naturalHeight) {
+                  setObjectFitClass("object-cover");
+                } else {
+                  setObjectFitClass("object-contain");
+                }
+              }
+            }}
+            ref={imageRef}
           />
-          <div className="absolute bottom-0 w-full p-4 bg-gradient-to-t from-black via-transparent to-transparent">
-            <div className={`${archivo_black.className} text-white text-xl font-semibold`}>
-              {title}
-            </div>
-          </div>
         </div>
+        {/* Description */}
+        <p className="text-center text-white text-sm py-4">{description}</p>
       </a>
     </Link>
   );
@@ -60,16 +65,21 @@ export default function LinkCardsSection() {
       title: "Rangers",
       imageUrl: "/assets/images/heroes/witch.png",
       link: "/game/hero",
+      description:
+        "Be up to date with what we are about and the current waves of web3 and the metaverse.",
     },
     {
       title: "Arenas",
       imageUrl: "/assets/images/arenas/Boss/Wild/1.png",
       link: "/game/map",
+      description:
+        "Be up to date with what we are about and the current waves of web3 and the metaverse.",
     },
     {
       title: "Pets",
       imageUrl: "/assets/images/pets/pet.gif",
       link: "/game/pet",
+      description: "Explore the pets and their unique abilities.",
     },
   ];
 
@@ -82,6 +92,7 @@ export default function LinkCardsSection() {
             title={card.title}
             imageUrl={card.imageUrl}
             link={card.link}
+            description={card.description}
           />
         ))}
       </div>
