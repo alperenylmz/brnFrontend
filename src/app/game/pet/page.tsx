@@ -123,8 +123,7 @@ export default function Page() {
   const [pets, setPets] = useState<PetData[]>([]);
   const [selectedPet, setSelectedPet] = useState<PetData | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-    const isMobile = useMediaQuery("(max-width: 768px)");
-
+  const isMobile = useMediaQuery("(max-width: 768px)");
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -264,64 +263,8 @@ export default function Page() {
           </div>
         </div>
 
-        <div className="absolute bottom-[17%] left-[24%] w-[50vh]">
-          {selectedPet && (
-            <div className="bg-glass shadow-lg rounded-lg flex flex-col p-4 border-2 border-gray-400 backdrop-blur-lg">
-              <div className="flex flex-row items-center justify-center gap-16">
-                <div className="flex flex-col gap-4 items-center">
-                  <img
-                    src="/assets/images/symbols/auto.svg" // Warrior veya diğer roller için ikon
-                    alt="Auto Attack Damage"
-                    width={50}
-                    height={50}
-                  />
-                  <p className="font-bold">
-                    {selectedPet.attributes.AutoAttackDamage !== null
-                      ? selectedPet.attributes.AutoAttackDamage
-                      : "N/A"}
-                  </p>
-                </div>
-
-                <div className="flex flex-col gap-4 items-center">
-                  <img
-                    src="/assets/images/symbols/skill.svg" // Warrior veya diğer roller için ikon
-                    alt="Skill Attack Damage"
-                    width={50}
-                    height={50}
-                  />
-                  <p className="font-bold">
-                    {selectedPet.attributes.SkillDamage !== null
-                      ? selectedPet.attributes.SkillDamage
-                      : "N/A"}
-                  </p>
-                </div>
-
-                <div className="flex flex-col gap-4 items-center">
-                  <img
-                    src="/assets/images/symbols/health.svg" // Warrior veya diğer roller için ikon
-                    alt="Health Points"
-                    width={50}
-                    height={50}
-                  />
-                  <p className="font-bold">
-                    {selectedPet.attributes.PetHP !== null
-                      ? selectedPet.attributes.PetHP.toFixed(2)
-                      : "N/A"}
-                  </p>
-                </div>
-              </div>
-
-              <p className="text-white py-4">
-                {selectedPet.attributes.SkillEffect !== null
-                  ? selectedPet.attributes.SkillEffect
-                  : "N/A"}{" "}
-              </p>
-            </div>
-          )}
-        </div>
-
         {/* Sağ tarafta seçilen pet'in büyük görünümü */}
-        <div className="w-[80vh] pt-4 p-4 flex flex-col items-center justify-center">
+        <div className="w-[100vh] pt-4 p-4 flex flex-col items-center justify-center">
           {selectedPet && (
             <div className="flex flex-col gap-32 items-center">
               <div className="bg-glass shadow-lg p-6 rounded-lg flex flex-col items-center justify-center w-3/4 h-full border-2 border-gray-400 backdrop-blur-lg">
@@ -337,12 +280,62 @@ export default function Page() {
                     ? selectedPet.attributes.Description
                     : "N/A"}
                 </p>
+                <div className="flex flex-col p-4">
+                  <div className="flex flex-row items-center justify-center gap-16">
+                    <div className="flex flex-col gap-4 items-center">
+                      <img
+                        src="/assets/images/symbols/auto.svg"
+                        alt="Auto Attack Damage"
+                        width={50}
+                        height={50}
+                      />
+                      <p className="font-bold">
+                        {selectedPet.attributes.AutoAttackDamage !== null
+                          ? selectedPet.attributes.AutoAttackDamage
+                          : "N/A"}
+                      </p>
+                    </div>
+
+                    <div className="flex flex-col gap-4 items-center">
+                      <img
+                        src="/assets/images/symbols/skill.svg"
+                        alt="Skill Attack Damage"
+                        width={50}
+                        height={50}
+                      />
+                      <p className="font-bold">
+                        {selectedPet.attributes.SkillDamage !== null
+                          ? selectedPet.attributes.SkillDamage
+                          : "N/A"}
+                      </p>
+                    </div>
+
+                    <div className="flex flex-col gap-4 items-center">
+                      <img
+                        src="/assets/images/symbols/health.svg" // Warrior veya diğer roller için ikon
+                        alt="Health Points"
+                        width={50}
+                        height={50}
+                      />
+                      <p className="font-bold">
+                        {selectedPet.attributes.PetHP !== null
+                          ? selectedPet.attributes.PetHP.toFixed(2)
+                          : "N/A"}
+                      </p>
+                    </div>
+                  </div>
+
+                  <p className="text-white py-4">
+                    {selectedPet.attributes.SkillEffect !== null
+                      ? selectedPet.attributes.SkillEffect
+                      : "N/A"}{" "}
+                  </p>
+                </div>
               </div>
             </div>
           )}
         </div>
-          <span className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-black to-transparent z-20"></span>
-
+        <span className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-black to-transparent z-20"></span>
       </div>
       <div className="relative z-0 flex flex-col bg-gradient-to-b from-black via-fuchsia-900 to-black items-center justify-center w-full h-screen">
         {/* Canvas for Background Animation */}

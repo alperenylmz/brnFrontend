@@ -410,4 +410,17 @@ body {
   z-index: 0;
 }
 
+.mySwiper {
+  flex-direction: column;
+  justify-content: center; /* Ortaya hizala */
+  align-items: center; /* Dikeyde ortala */
+  overflow: visible; /* Taşan elemanları göster */
+
+}
+
+.swiper-slide {
+  flex-shrink: 0; /* Elemanların boyutunu sabit tut */
+  width: auto; /* Elemanların doğal genişliğini koru */
+}
+
 
