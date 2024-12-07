@@ -6,9 +6,10 @@ export default function useTokenAllocations() {
     const [isLoading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<any>(null);
 
-    let API_HOST = 'https://strapiornek3.onrender.com';
+    //let API_HOST = 'https://strapiornek3.onrender.com';
 
 
+    let API_HOST = 'http://localhost:1337';
 
     useEffect(()=> {
         async function getTokenAllocations(){

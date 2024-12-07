@@ -190,16 +190,29 @@ export default function Page() {
       <div
         className="flex flex-row items-start justify-center py-16 w-full h-screen relative"
         style={{
-          backgroundImage: `url(${
-            selectedPet?.attributes?.Gif?.data?.attributes?.url
-              ? getStrapiMedia(selectedPet.attributes.Gif.data.attributes)
-              : "/default/path/to/pets.webp"
-          })`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
         }}
       >
+        {selectedPet?.attributes?.Gif?.data?.attributes?.url ? (
+          // Eğer medya bir video ise
+          <video
+            src={getStrapiMedia(selectedPet.attributes.Gif.data.attributes)}
+            autoPlay
+            loop
+            muted
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+        ) : (
+          // Eğer medya yoksa varsayılan arka plan
+          <div
+            style={{
+              backgroundImage: `url(/default/path/to/pets.webp)`,
+            }}
+            className="absolute inset-0 w-full h-full bg-cover"
+          />
+        )}
         {/* Sol tarafta dikey swiper - Glass Container */}
         <div className="absolute top-[20%] bottom-[10%] left-[8%] w-[25vh]">
           <div className="bg-glass border-2 border-gray-400 backdrop-blur-lg p-2 rounded-lg shadow-lg h-[90%] flex items-center justify-center">

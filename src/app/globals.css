@@ -193,12 +193,19 @@ body {
 }
 
 .bg-gradient-home {
-  background-image: linear-gradient(
+  /* background-image: linear-gradient(
     135.58deg,
     #000138 20%,
     #581539 50%,
     #000138 80%
-  );
+  ); */
+  /* background-image: linear-gradient(
+    135.58deg,
+    #281549 20%, 
+    #3a2464 50%, 
+    #4b337e 80%   Çok fazla açılmadan biraz daha açık mor 
+  ); */
+  background-color:#2e1c50;
   background-position: center;
   background-size: 150% 150%; /* Arka plan boyutunu genişlettik */
   background-repeat: no-repeat;
@@ -423,4 +430,89 @@ body {
   width: auto; /* Elemanların doğal genişliğini koru */
 }
 
+.glow-effect {
+  color: white; /* Metnin rengi beyaz */
+  text-shadow: 
+    0 0 10px rgba(255, 255, 255, 0.25), /* Hafif iç glow */
+    0 0 20px rgba(255, 255, 255, 0.25), /* Dış glow */
+    0 0 30px rgba(255, 255, 255, 0.25); /* Daha geniş dış glow */
+}
 
+.gradient-to-black {
+  display: block; /* Blok düzeyde bir öğe */
+  height: 150px; /* Daha yumuşak bir geçiş için artırılmış yükseklik */
+  width: 100%; /* Tüm genişliği kapsar */
+  background: linear-gradient(
+    to bottom,
+    #2e1c50 0%,  /* Başlangıç koyu mor tonu */
+    #1e142e 50%, /* Daha koyu bir ara ton */
+    #000000 100% /* Siyah */
+  );
+}
+.black-to-gradient {
+  display: block; /* Blok düzeyde bir öğe */
+  height: 150px; /* Daha yumuşak bir geçiş için artırılmış yükseklik */
+  width: 100%; /* Tüm genişliği kapsar */
+  background: linear-gradient(
+    to top,
+    #2e1c50 0%,  /* Başlangıç koyu mor tonu */
+    #1e142e 50%, /* Daha koyu bir ara ton */
+    #000000 100% /* Siyah */
+  );
+}
+
+/* global.css */
+@keyframes custom-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spin {
+  animation: custom-spin 1s linear infinite;
+}
+
+@keyframes customGlowEffect {
+  0% {
+    border-color: hsl(197, 100%, 50%);
+  }
+  50% {
+    border-color: hsl(197, 100%, 60%);
+  }
+  100% {
+    border-color: hsl(197, 100%, 50%);
+  }
+}
+
+.custom-glow-border {
+  animation: customGlowEffect 2s infinite alternate;
+  border: 3px solid hsl(197, 100%, 50%);
+  padding: 10px; /* İçerik ile sınır arasında boşluk */
+  display: inline-block; /* İçerik boyutuna göre alan */
+  border-radius: 20px; /* Yuvarlak köşeler (isteğe bağlı) */
+  background: black; /* İçerik arka planı */
+}
+
+.card-custom {
+  background-color: #1a202c; /* Koyu arka plan */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Hafif gölge */
+  text-align: center;
+  color: white;
+  padding: 1.5rem;
+  border-radius: 1.5rem;
+}
+
+.card h3 {
+  font-size: 2rem; /* Text 4xl */
+  font-weight: bold;
+  text-transform: uppercase; /* Uppercase */
+  margin-bottom: 0.5rem;
+}
+
+.card p {
+  font-size: 0.875rem; /* Text-sm */
+  color: #a0aec0; /* Açık gri yazı rengi */
+}

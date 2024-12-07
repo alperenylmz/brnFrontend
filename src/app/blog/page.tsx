@@ -1,5 +1,5 @@
 "use client";
-import { archivo_black } from "@/config/fonts";
+import { archivo_black, poppins } from "@/config/fonts";
 import { useEffect, useState } from "react";
 
 import useBlog from "@/hooks/useBlog";
@@ -88,8 +88,12 @@ export default function Blog() {
   const fetchPosts = async (pageNumber: number) => {
     setLoading(true);
     try {
+      // const response = await fetch(
+      //   `https://strapiornek3.onrender.com/api/blog-posts?filter[published]=1&pagination[page]=${pageNumber}&pagination[pageSize]=6&fields[0]=Title&fields[1]=slug&fields[2]=createdAt&fields[3]=miniDescription&populate[coverImage][fields][0]=url&populate[coverImage][fields][1]=formats`
+      // );
+
       const response = await fetch(
-        `https://strapiornek3.onrender.com/api/blog-posts?filter[published]=1&pagination[page]=${pageNumber}&pagination[pageSize]=6&fields[0]=Title&fields[1]=slug&fields[2]=createdAt&fields[3]=miniDescription&populate[coverImage][fields][0]=url&populate[coverImage][fields][1]=formats`
+        `http://localhost:1337/api/blog-posts?filter[published]=1&pagination[page]=${pageNumber}&pagination[pageSize]=6&fields[0]=Title&fields[1]=slug&fields[2]=createdAt&fields[3]=miniDescription&populate[coverImage][fields][0]=url&populate[coverImage][fields][1]=formats`
       );
 
       if (!response.ok) {
@@ -150,23 +154,23 @@ export default function Blog() {
 
   return (
     <>
-      <main className="flex flex-col items-center bg-gradient-home justify-center w-full overflow-x-hidden">
+      <main className="flex flex-col items-center bg-black justify-center w-full overflow-x-hidden">
         <div
           className={`flex items-center justify-center min-h-[50vh] pt-16 w-full ${
             isMobile ? "px-4" : ""
           }`}
         >
           <div
-            className={`w-full max-w-[90vw] lg:max-w-[40vw] m-auto text-left lg:text-center ${
+            className={`w-full max-w-[90vw] lg:max-w-[65vw] m-auto text-left lg:text-center ${
               isMobile ? "text-center" : ""
             }`}
           >
             <h2
-              className={`${archivo_black.className} uppercase text-2xl lg:text-5xl mb-5 text-white`}
+              className={`${archivo_black.className} uppercase text-2xl lg:text-5xl mb-5 text-white glow-effect`}
             >
               Blog <span className={"text-secondary"}>Posts</span>
             </h2>
-            <p>
+            <p className={`${poppins.regular.className} text-xl`}>
               Be up to date with what we are about and the current waves of web3
               and the metaverse.
             </p>
@@ -181,7 +185,8 @@ export default function Blog() {
             {posts.map((post, index) => (
               <Link key={index} href={`/blog/${post.slug}`}>
                 <Grid xs={12} lg={4}>
-                  <div className="bg-black min-h-[450px] bg-opacity-30 backdrop-blur-md post-card p-2 text-white rounded-xl transition-transform duration-300 transform hover:scale-105 hover:shadow-lg">
+                  {/* bg-black min-h-[450px] bg-opacity-30 backdrop-blur-md */}
+                  <div className="bg-glass min-h-[450px] post-card p-2 text-white rounded-xl transition-transform duration-300 transform hover:scale-105 hover:shadow-lg">
                     <div
                       className={
                         "relative h-[200px] w-full overflow-hidden rounded-xl"
@@ -195,21 +200,21 @@ export default function Blog() {
                     </div>
                     <div className={"flex justify-between mt-5 mb-3 px-5"}>
                       <div className={"flex flex-col gap-2"}>
-                        <p className={"text-xl font-bold"}>{post.title}</p>
+                        <p className={`${archivo_black.className} text-xl font-bold`}>{post.title}</p>
                         <div
                           className={
-                            "flex items-center text-xs gap-1 text-accent"
+                            `${poppins.bold.className} flex items-center text-xs gap-1 text-secondary`
                           }
                         >
                           <span>Posted </span>
                           <TimeAgo
-                            className={"text-xs text-white"}
+                            className={`${poppins.regular.className} text-xs text-white`}
                             datetime={post.createdAt}
                             locale="us_En"
                             live={true}
                           />
                         </div>
-                        <p className={"text-sm mt-3"}>{post.description}</p>
+                        <p className={`${poppins.regular.className} text-sm mt-3`}>{post.description}</p>
                       </div>
                     </div>
                   </div>

@@ -1,6 +1,6 @@
 "use client";
 import { CustomFlowbiteTheme, Tabs } from "flowbite-react";
-import { archivo_black } from "@/config/fonts";
+import { archivo_black, poppins } from "@/config/fonts";
 import React, { useState, useEffect, useRef } from "react";
 import { EVENT, BRN, BOSS } from "@/helpers/strings";
 import Image from "next/image";
@@ -87,6 +87,11 @@ export default function DefaultTabs() {
     BossArena: "",
     BrnArena: "",
   });
+  const videoRefs = useRef<{ [key: string]: HTMLVideoElement | null }>({
+    EventArena: null,
+    BossArena: null,
+    BrnArena: null,
+  });
   const swiperRef = useRef(null);
 
   useEffect(() => {
@@ -149,6 +154,14 @@ export default function DefaultTabs() {
       ...prev,
       [arena]: modeDescription,
     }));
+
+    // Reset and play the video for the selected arena
+    if (videoRefs.current[arena]) {
+      videoRefs.current[arena].pause();
+      videoRefs.current[arena].currentTime = 0;
+      videoRefs.current[arena].load();
+      videoRefs.current[arena].play();
+    }
   };
 
   const renderArenaSection = (
@@ -160,10 +173,10 @@ export default function DefaultTabs() {
     const isBrnArena = arenaKey === "BrnArena";
 
     return (
-      <div
-        className="flex flex-col items-center justify-center w-full h-screen relative">
-          {selectedModeImage[arenaKey] && (
+      <div className="flex flex-col items-center justify-center w-full h-screen relative">
+        {!isBrnArena && selectedModeImage[arenaKey] && (
           <video
+            ref={(el) => (videoRefs.current[arenaKey] = el)}
             className="absolute top-0 left-0 w-full h-full object-cover z-0"
             autoPlay
             loop
@@ -173,6 +186,7 @@ export default function DefaultTabs() {
             Your browser does not support the video tag.
           </video>
         )}
+
         {/* Top Left Gradient Span */}
         <span className="absolute top-0 left-0 z-0 w-1/2 h-1/2 bg-gradient-to-br from-black to-transparent" />
         {/* Top Right Gradient Span */}
@@ -187,7 +201,7 @@ export default function DefaultTabs() {
         <span className="absolute right-0 top-0 z-0 h-full w-4 bg-gradient-to-l from-black to-transparent" />
 
         <h2
-          className={`${archivo_black.className} text-5xl z-10 font-bold mt-24 text-center text-white`}
+          className={`${archivo_black.className} text-5xl z-10 font-bold mt-24 text-center text-white glow-effect`}
         >
           {arenaData.Title}
         </h2>
@@ -274,8 +288,8 @@ export default function DefaultTabs() {
                 ))}
               </Swiper>
             </div>
-            <div className="bg-glass rounded-lg shadow-lg w-[35vh] flex items-end z-10 justify-end p-8 text-white ml-auto">
-              {selectedModeDescription[arenaKey]}
+            <div className="bg-glass rounded-lg shadow-lg w-[35vh] flex items-end text-justify z-10 justify-end p-8 text-white ml-auto">
+              <span className={`${poppins.regular.className}`}>{selectedModeDescription[arenaKey]}</span>
             </div>
           </div>
         )}
@@ -288,9 +302,12 @@ export default function DefaultTabs() {
                 boxShadow: "0 0 20px 5px rgba(58, 123, 253, 0.6)", // Light glow effect
               }}
             >
-              <img
+              <video
+                ref={(el) => (videoRefs.current[arenaKey] = el)}
+                autoPlay
+                muted
+                loop
                 src={selectedModeImage[arenaKey]}
-                alt="BRN Arena"
                 className="max-w-full max-h-full object-cover rounded-lg"
               />
             </div>
@@ -301,7 +318,7 @@ export default function DefaultTabs() {
   };
 
   return (
-    <main className="flex flex-col items-center bg-gradient-home justify-center overflow-hidden relative">
+    <main className="flex flex-col items-center z-50 bg-gradient-home justify-center overflow-hidden relative">
       {arenasData ? (
         <>
           {renderArenaSection(

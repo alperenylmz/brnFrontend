@@ -53,7 +53,7 @@ export default function Brain() {
           <a
             href="#"
             className={`bg-white text-black p-4 rounded-xl flex items-center space-x-3 cursor-not-allowed pointer-events-none ${
-              isMobile ? "w-[200px]" : "w-[250px]"
+              isMobile ? "w-[200px]" : "w-[200px]"
             }`}
           >
             <FaApple size={isMobile ? 24 : 36} className="text-black" />
@@ -79,7 +79,7 @@ export default function Brain() {
           <a
             href="#"
             className={`bg-white text-black p-4 rounded-xl flex items-center space-x-3 cursor-not-allowed pointer-events-none ${
-              isMobile ? "w-[200px]" : "w-[250px]"
+              isMobile ? "w-[200px]" : "w-[200px]"
             }`}
           >
             <img

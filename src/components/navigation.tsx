@@ -92,7 +92,7 @@ const Navigation = () => {
           <div
             className={`$${
               isMobile ? "text-3xl" : ""
-            } flex flex-col z-50 md:flex-row items-center justify-center gap-5 h-full`}
+            } ${poppins.bold.className} flex flex-col z-50 md:flex-row items-center justify-center gap-8 h-full`}
           >
             {[
               { url: "/", text: "Home" },
@@ -180,8 +180,6 @@ const Navigation = () => {
                 text: "Stake",
                 newTab: true,
               },
-              { url: "/roadmap", text: "Roadmap" },
-              { url: "/team", text: "Team" },
               { url: "/blog", text: "Blog" },
               { url: "/brain", text: "Brain" },
               { url: "https://dracoin.net", text: "Dracarys", newTab: true },

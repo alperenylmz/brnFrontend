@@ -1,9 +1,11 @@
 // src/components/ParticleBackground.tsx
 
+import useMediaQuery from "@/hooks/useMediaQuery";
 import React, { useEffect, useRef } from "react";
 
 const ParticleBackground: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const isMobile = useMediaQuery("(max-width: 768px)"); // Detect mobile screen size
 
   useEffect(() => {
     const CANVAS = canvasRef.current;
@@ -11,7 +13,7 @@ const ParticleBackground: React.FC = () => {
 
     const CTX = CANVAS.getContext("2d");
     const W = window.innerWidth;
-    const H = window.innerHeight;
+    const H = isMobile ? 800 : window.innerHeight;
     const XO = W / 2;
     const YO = H / 2;
     const NUM_PARTICLES = 400;
@@ -132,9 +134,7 @@ const ParticleBackground: React.FC = () => {
   }, []);
 
   return (
-    <div className="absolute top-0 left-0 z-10 w-full h-full">
-      <canvas ref={canvasRef} />
-    </div>
+      <canvas className="z-10 absolute bottom-0 " ref={canvasRef} />
   );
 };
 

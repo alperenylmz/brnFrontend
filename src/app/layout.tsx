@@ -24,7 +24,7 @@ function RootLayout({ children }: { children: React.ReactNode }) {
   const isGamePage = pathname.startsWith("/game");
 
   return (
-    <html lang="en">
+    <html lang="en" className="bg-black">
       <head>
         <title>BRN Metaverse</title>
         <meta
@@ -37,7 +37,7 @@ function RootLayout({ children }: { children: React.ReactNode }) {
       <body
         className={`${
           poppins.regular.className
-        } bg-primary-dark text-white overflow-x-hidden ${
+        } text-white overflow-x-hidden ${
           isMobile ? "min-h-screen flex flex-col justify-between" : ""
         }`}
       >
@@ -72,7 +72,7 @@ function RootLayout({ children }: { children: React.ReactNode }) {
         )}
 
         {/* Footer */}
-        <div className="bg-primary w-full">
+        <div className={`${isMobile ? "overflow-hidden h-full" : ""} bg-primary w-full`}>
           <Footer />
         </div>
       </body>

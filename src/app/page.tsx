@@ -273,12 +273,14 @@ interface CoinResponse {
 
 export default function Home() {
   const [showTokenInfo, setShowTokenInfo] = useState(false);
-  {/*const [showSocialInfo, setShowSocialInfo] = useState(false);
+  {
+    /*const [showSocialInfo, setShowSocialInfo] = useState(false);
   const [tokenAllocations] = useTokenAllocations();
   const [{ token: tokenInformation }] = useConfig("token");
   const [{ documents }] = useConfig("documents");
   const [markets] = useMarkets();
-  const [modalIslOpen, setModalIsOpen] = useState(false); */}
+  const [modalIslOpen, setModalIsOpen] = useState(false); */
+  }
   const [videoIsPlaying, setVideoIsPlaying] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [data, setData] = useState<HomePageData>();
@@ -469,18 +471,12 @@ export default function Home() {
     }
   }, [videoRef.current]);
 
-  const playVideo = () => {
-    videoRef.current?.play();
-    setVideoIsPlaying(true);
-  };
-  
   useEffect(() => {
     setIsClient(true);
   }, []);
 
   return (
     <>
-
       <main className="bg-gradient-home -z-50">
         {/*TOKEN SLIDE*/}
         <div
@@ -518,7 +514,7 @@ export default function Home() {
             <div className="flex-grow flex items-center justify-center">
               <div className="min-h-[300px]">
                 <h1
-                  className={`${archivo_black.className} uppercase text-5xl lg:text-6xl font-bold mb-5`}
+                  className={`${archivo_black.className} uppercase text-4xl lg:text-6xl font-bold mb-5`}
                 >
                   Transforming the cryptocurrency landscape through cutting-edge
                   advancements in
@@ -531,11 +527,12 @@ export default function Home() {
             </div>
           </div>
         </div>
+        <span className="black-to-gradient"></span>
 
-        <div className="flex flex-col items-center justify-center min-h-[100vh] py-32">
+        <div className="flex flex-col items-center justify-center min-h-[100vh] py-16">
           <div className="w-[90vw] lg:w-[40vw] text-center">
             <h2
-              className={`${archivo_black.className} uppercase text-3xl py-4 lg:text-5xl font-bold text-white`}
+              className={`${archivo_black.className} uppercase text-3xl py-4 lg:text-5xl font-bold text-white glow-effect`}
             >
               ABOUT <span className={"text-secondary"}>US</span>
             </h2>
@@ -548,28 +545,29 @@ export default function Home() {
           >
             {/* Text Section */}
             <div className="justify-start w-full">
-              <p className="text-lg text-justify lg:text-xl">
+              <p
+                className={`${poppins.regular.className} text-lg text-justify lg:text-xl`}
+              >
                 <span
                   className={`${archivo_black.className} text-white text-2xl lg:text-4xl font-extrabold block mb-4`}
                 >
                   Welcome to BRN Metaverse
                 </span>
-                At BRN Metaverse, we are revolutionizing the future of digital
-                interaction and gaming by seamlessly merging the virtual world
-                with reality. Our innovative platform harnesses the power of
-                cutting-edge technology, including Blockchain, Artificial
-                Intelligence, and Web 3.0, to create an immersive metaverse
-                experience. We aim to redefine gaming by integrating
-                play-to-earn mechanics, virtual economies, and in-game
-                inventories, where every asset has real-world value. Players can
-                explore new dimensions of gaming, where rarity, demand, and
-                utility determine the worth of their in-game assets, turning
-                gaming into more than just entertainment—it's an economic
-                adventure. Join us as we lead the charge in shaping the future
+                At BRN Metaverse, we are redefining the future of digital
+                interaction. By combining Blockchain, AI, and Web 3.0, we create
+                an immersive world where virtual and reality merge seamlessly.
+                <br/>
+                <br/>
+                We elevate gaming with play-to-earn mechanics, virtual
+                economies, and assets that hold real-world value. Here, rarity
+                and utility transform gaming into an economic adventure, making
+                it more than just entertainment. 
+                <br/>
+                <br/>
+                Join us as we push the limits
                 of tech-driven interactions and groundbreaking digital
-                experiences. BRN Metaverse is where the boundaries of the
-                virtual and real worlds blur, creating limitless possibilities
-                for everyone.
+                experiences. BRN Metaverse blurs the line between the real and
+                virtual worlds—unleashing limitless possibilities.
               </p>
             </div>
 
@@ -601,19 +599,19 @@ export default function Home() {
         <div className="flex flex-col items-center py-16 min-h-screen">
           <div className="w-[90vw] lg:w-[40vw] text-center mb-16">
             <h2
-              className={`${archivo_black.className} uppercase text-3xl lg:text-5xl font-bold text-white mb-5`}
+              className={`${archivo_black.className} uppercase text-3xl lg:text-5xl font-bold text-white mb-5 glow-effect`}
             >
               PROJECTS
             </h2>
           </div>
 
           {/* Project List */}
-          <div className="w-full flex flex-wrap justify-center gap-8 px-8">
+          <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 px-8">
             {data?.data?.attributes?.Projects.map((project, index) => (
               <a
                 key={index}
                 href={project.Link || "#"} // Default to "#" if no link is available
-                className="bg-black bg-opacity-40 text-white p-6 rounded-lg shadow-lg w-[90%] sm:w-[45%] lg:w-[30%] transition-transform duration-300 hover:scale-105 block"
+                className={`${isMobile ? "w-[100%]" : "w-[90%]"} bg-gradient-to-r from-[#5A2BB2] via-[#3753A6] to-[#0073B2] text-white p-6 rounded-lg shadow-2xl sm:w-[45%] lg:w-[100%] transition-transform duration-300 hover:scale-105 block`}
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -622,16 +620,20 @@ export default function Home() {
                   <img
                     src={
                       project.logo.data.attributes.url
-                        ? getStrapiMedia(
-                            project.logo.data.attributes
-                          )
+                        ? getStrapiMedia(project.logo.data.attributes)
                         : "/path/to/default_image.png"
                     }
                     alt={
                       project.logo.data.attributes.alternativeText ||
                       "Project Logo"
                     }
-                    className="h-24 w-24 object-contain rounded-lg"
+                    className={`h-24 rounded-lg ${
+                      project.logo.data.attributes.width /
+                        project.logo.data.attributes.height >
+                      1.5
+                        ? "object-cover"
+                        : "object-contain"
+                    }`}
                   />
                 </div>
 
@@ -643,31 +645,35 @@ export default function Home() {
                 </h3>
 
                 {/* Project Description */}
-                <p className="text-sm min-h-[300px] lg:text-base text-justify mb-4">
+                <p
+                  className={`${poppins.regular.className} text-sm min-h-[300px] lg:text-base text-justify mb-4`}
+                >
                   {project.Description}
                 </p>
 
-                {/* Project Tags */}
-                <div className="flex justify-center flex-wrap gap-2">
-                  {project.Tags.split(",").map((tag, index) => (
-                    <span
-                      key={index}
-                      className="inline-block bg-purple-600 bg-opacity-70 text-white py-1 px-3 rounded-lg text-sm"
-                    >
-                      {tag.trim()} {/* Boşlukları temizlemek için .trim() */}
-                    </span>
-                  ))}
-                </div>
+                <div>
+                  {/* Project Tags */}
+                  <div className="flex justify-center flex-wrap gap-2">
+                    {project.Tags.split(",").map((tag, index) => (
+                      <span
+                        key={index}
+                        className="inline-block bg-purple-600 bg-opacity-70 text-white py-1 px-3 rounded-lg text-sm"
+                      >
+                        {tag.trim()} {/* Boşlukları temizlemek için .trim() */}
+                      </span>
+                    ))}
+                  </div>
 
-                {/* Visit Link */}
-                <div className="text-center mt-4">
-                  {project.Link ? (
-                    <span className="text-cyan-500 hover:text-cyan-300 underline transition-all duration-200">
-                      Click To Visit
-                    </span>
-                  ) : (
-                    <span className="text-gray-500">No link</span>
-                  )}
+                  {/* Visit Link */}
+                  <div className="text-center pt-4">
+                    {project.Link ? (
+                      <span className="text-cyan-500 hover:text-cyan-300 underline transition-all duration-200">
+                        Learn More
+                      </span>
+                    ) : (
+                      <span className="text-gray-500">No link</span>
+                    )}
+                  </div>
                 </div>
               </a>
             ))}
@@ -677,7 +683,7 @@ export default function Home() {
         <div className="flex flex-col items-center py-24 min-h-screen">
           <div className="w-[90vw] lg:w-[40vw] text-center mb-16">
             <h2
-              className={`${archivo_black.className} uppercase text-3xl lg:text-5xl font-bold text-white mb-5`}
+              className={`${archivo_black.className} uppercase text-3xl lg:text-5xl font-bold text-white mb-5 glow-effect`}
             >
               TEAM
             </h2>
@@ -689,7 +695,7 @@ export default function Home() {
               <a
                 key={index}
                 href={member.url || "#"} // Eğer link yoksa "#" kullanıyoruz
-                className={`bg-black bg-opacity-20 text-white p-6 rounded-lg shadow-lg w-full transition-transform duration-300 hover:scale-105 min-h-[75vh] flex flex-col justify-between ${
+                className={`bg-glass shadow-2xl text-white p-6 rounded-2xl w-full transition-transform duration-300 hover:scale-105 min-h-[75vh] flex flex-col justify-between ${
                   index === 3
                     ? "lg:col-span-1 lg:row-start-2 lg:col-start-1"
                     : ""
@@ -703,9 +709,7 @@ export default function Home() {
                     <img
                       src={
                         member?.Photo?.data?.attributes?.url
-                          ? getStrapiMedia(
-                              member.Photo.data.attributes
-                            )
+                          ? getStrapiMedia(member.Photo.data.attributes)
                           : "/path/to/default_image.png"
                       }
                       alt={
@@ -725,7 +729,9 @@ export default function Home() {
                     </h3>
 
                     {/* Member Position */}
-                    <p className="text-sm min-h-[50px] lg:text-base text-center">
+                    <p
+                      className={`${poppins.regular.className} text-sm min-h-[50px] lg:text-base text-center`}
+                    >
                       {member.Position}
                     </p>
                   </div>
@@ -755,16 +761,16 @@ export default function Home() {
             }`}
           >
             <div
-              className={`w-[90vw] lg:w-[40vw] ${
+              className={`w-[90vw] lg:w-[65vw] ${
                 isMobile ? "text-center" : "md:text-center"
               } mb-12`}
             >
               <h2
-                className={`${archivo_black.className} uppercase text-3xl lg:text-5xl font-bold mb-5 text-white`}
+                className={`${archivo_black.className} uppercase text-3xl lg:text-5xl font-bold mb-5 text-white glow-effect`}
               >
                 Our <span className={"text-secondary"}>Partners</span>
               </h2>
-              <p className="text-white">
+              <p className={`${poppins.regular.className} text-white text-xl`}>
                 Trusted by 25+ partners, we are making waves in the web3 space,
                 changing the norm and introducing a project that will change the
                 way we see web3 and gaming.
@@ -794,6 +800,7 @@ export default function Home() {
                         boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
                         "&:hover": { transform: "scale(1.05)", boxShadow: 6 },
                       }}
+                      className="bg-glass shadow-2xl"
                     >
                       {/* Üst Başlık ve Yeni Partner Rozeti */}
                       <CardHeader
@@ -863,8 +870,10 @@ export default function Home() {
 
                         {/* Açıklama */}
                         <Typography variant="body2" color="white">
-                          {block.PartnerDescription ||
-                            "No description available"}
+                          <span className={`${poppins.regular.className}`}>
+                            {block.PartnerDescription ||
+                              "No description available"}
+                          </span>
                         </Typography>
                       </CardContent>
 
@@ -902,13 +911,15 @@ export default function Home() {
 
           {/* Social Media Section */}
           <div
-            className={`text-center transition-opacity duration-1000 ease-in-out ${
-              isMobile ? "mt-16" : "lg:mt-64"
-            } py-8`}
             ref={joinRef}
+            className={`text-center transition-opacity duration-1000 ease-in-out ${
+              isMobile ? "mt-16" : "lg:mt-64" }
+              ${isJoinVisible ? "opacity-100" : "opacity-0"}
+
+            }`}
           >
             <h2
-              className={`${archivo_black.className} uppercase text-3xl lg:text-5xl mb-32`}
+              className={`${archivo_black.className} uppercase text-3xl lg:text-5xl mb-32 glow-effect`}
             >
               Join <span className="text-secondary">Us</span>
             </h2>
@@ -969,14 +980,14 @@ export default function Home() {
               isVisible ? "opacity-100" : "opacity-0"
             }`}
           >
-            <div className="w-[80vw] lg:w-[40vw] text-center mb-16">
+            <div className="w-[80vw] lg:w-[65vw] text-center mb-16">
               {/* Başlık ve açıklama */}
               <h2
-                className={`${archivo_black.className} uppercase text-3xl lg:text-5xl mb-5`}
+                className={`${archivo_black.className} uppercase text-3xl lg:text-5xl mb-5 glow-effect`}
               >
                 Road<span className="text-secondary">map</span>
               </h2>
-              <p>
+              <p className={`${poppins.regular.className} text-xl`}>
                 We have our entire journey mapped out. Know exactly what we are
                 up to by reading through our roadmap.
               </p>
@@ -1067,6 +1078,7 @@ export default function Home() {
                 Close
             </button>
         </div> */}
+        <span className="gradient-to-black mb-16"></span>
       </main>
     </>
   );

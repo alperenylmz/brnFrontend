@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import ParticleBackground from "./particle-background";
 import { fetchAPI } from "@/lib/api";
 import { getStrapiMedia } from "@/lib/media";
-import { archivo_black } from "@/config/fonts";
+import { archivo_black, poppins } from "@/config/fonts";
 import BRNLogo from "../../public/favicon-16x16.png";
 import useMediaQuery from "@/hooks/useMediaQuery";
 
@@ -294,7 +294,7 @@ const Footer = () => {
       <div
         className={`${
           isMobile
-            ? "absolute z-0 h-full w-full object-cover"
+            ? "absolute z-0 h-full w-full object-fill"
             : "absolute min-h-full inset-0 z-0"
         }`}
         style={{
@@ -308,19 +308,19 @@ const Footer = () => {
       <div className="relative z-10">
         <div
           className={
-            "grid grid-cols-1 md:grid-cols-2 justify-between items-center w-[90vw] lg:w-[70vw] m-auto min-h-[40vh] pt-8 gap-16 bg-transparent"
+            ` ${isMobile ? "min-h-[20vh]" : "pt-8 min-h-[40vh]"} grid grid-cols-1 md:grid-cols-2 justify-between items-center w-[90vw] lg:w-[80vw] mx-auto gap-32 bg-transparent`
           }
         >
           <div className={"md:order-none order-2"}>
-            <h4 className={"text-xl lg:text-3xl font-bold mb-5"}>
+            <h4 className={`${poppins.bold.className} text-xl lg:text-3xl font-bold mb-5`}>
               We only send valuable emails, you are safe from spam emails.
             </h4>
-            <p>Go ahead and explore them to find some really cool NFTs.</p>
+            <p className={`${poppins.regular.className}`}>Go ahead and explore them to find some really cool NFTs.</p>
             <div className={`${isMobile ? "" : "mt-8"}`}>
               <form onSubmit={subscribe}>
                 <div
                   className={
-                    "flex gap-2 justify-between items-center border border-white rounded-lg p-2"
+                    `${isMobile ? "p-1" : "p-2"} flex gap-2 justify-between items-center border border-white rounded-lg `
                   }
                 >
                   <input
@@ -353,7 +353,8 @@ const Footer = () => {
               </p>
             </div>
           </div>
-          <div
+          {!isMobile && 
+            <div
             className={
               "flex items-center justify-center relative w-full order-1 md:order-none m-auto text-center"
             }
@@ -365,14 +366,16 @@ const Footer = () => {
               alt="Gmail Logo"
             />
           </div>
+          }
+          
         </div>
 
-        <div className={`${isMobile ? "" : " mt-4"} relative flex items-center justify-center min-h-[320px]`}>
+        <div className={`${isMobile ? "" : "mb-4"} relative flex items-center justify-center min-h-[320px]`}>
           {/* İçerik */}
           <div className="relative z-10 flex flex-col md:flex-row items-center justify-between w-[90vw] lg:w-[80vw]">
-            <div className={`${isMobile ? "" : "mt-8"} flex flex-row gap-8 items-start `}>
+            <div className={`${isMobile ? " " : "mt-8"} flex flex-row gap-8 items-start `}>
               {/* Sol Kolon - Linkler */}
-              <div className={`${isMobile ? "space-y-2" : "space-y-4"} flex flex-col  text-white`}>
+              <div className={`${isMobile ? "space-y-0" : "space-y-4"} flex flex-col  text-white`}>
                 <a
                   href="https://www.brnmetaverse.net/token"
                   className="hover:text-gray-400"
@@ -427,7 +430,7 @@ const Footer = () => {
                 </h1>
 
                 {/* Liste şeklinde platformları gösteriyoruz */}
-                <ul className="list-none space-y-2 w-full">
+                <ul className={`${isMobile ? "" : "space-y-2"} list-none  w-full`}>
                   {data?.data?.attributes?.Footer?.AvailableOn.map(
                     (platform) => (
                       <li

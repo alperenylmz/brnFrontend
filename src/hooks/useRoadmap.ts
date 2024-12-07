@@ -27,7 +27,8 @@ export default function useRoadmap(): [
     async function getRoadmap() {
       setLoading(true);
       try {
-        const request = await fetch(`https://strapiornek3.onrender.com/api/home?populate[Roadmap][populate][List][populate]=*`);
+        // const request = await fetch(`https://strapiornek3.onrender.com/api/home?populate[Roadmap][populate][List][populate]=*`);
+        const request = await fetch(`http://localhost:1337/api/home?populate[Roadmap][populate][List][populate]=*`);
         const responseJson = await request.json();
         const response = responseJson;
 
